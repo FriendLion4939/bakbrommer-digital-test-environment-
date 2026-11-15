@@ -1,0 +1,5 @@
+name: Default bakbrommer
+description: Empty cargo box, rider only. Starting point for all other profiles.
+base: null
+validated: false
+values: {}

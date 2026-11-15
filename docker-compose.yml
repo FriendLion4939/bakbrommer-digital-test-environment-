@@ -1,0 +1,16 @@
+# Start:   docker compose up -d --build
+# Open:    http://<server-address>:8501
+# Stop:    docker compose down
+# Tests:   docker compose run --rm bakbrommer-twin test
+services:
+  bakbrommer-twin:
+    build: .
+    container_name: bakbrommer-twin
+    ports:
+      - "8501:8501"
+    volumes:
+      # Your profiles, scenarios, mappings and logs:
+      - ./userdata/data:/data
+      # Saved simulation results:
+      - ./userdata/runs:/runs
+    restart: unless-stopped

@@ -1,0 +1,62 @@
+# All interface texts (English). Copy this file to nl.yaml to add Dutch.
+app:
+  title: Bakbrommer Twin
+  language: Language
+  not_validated: >-
+    NOT VALIDATED — this profile has not been calibrated against real ride
+    data yet. Treat all results as estimates.
+nav:
+  parameters: Parameters
+status:
+  measured: measured
+  estimated: estimated
+  default: default (needs measuring)
+  calibrated: calibrated
+params:
+  title: Vehicle parameters
+  intro: >-
+    Every value the simulator uses is listed here. Pick a profile, change
+    values, and save. Values marked "default" or "estimated" still need
+    measuring on the real vehicle.
+  profile: Profile
+  profile_name: Profile name
+  profile_description: Description
+  based_on: Based on
+  no_base: (program defaults)
+  category: Category
+  general_group: General
+  status: Status
+  curve_help: List of numbers separated by commas.
+  invalid_value: "Not accepted: {error}"
+  unsaved: "{count} unsaved change(s)"
+  no_changes: No unsaved changes
+  save: Save
+  saved: Profile saved.
+  revert: Undo changes
+  save_as: Save as new profile
+  new_key: File name (lower-case letters, digits, _)
+  new_name: Name of the new profile
+  create: Create
+  delete: Delete profile
+  delete_confirm: Yes, delete this profile
+  deleted: Profile deleted.
+  needs_measuring: "{count} of {total} values in this category still need measuring."
+  search: Search all parameters
+  tab_edit: Edit
+  tab_derived: Calculated values
+  tab_compare: Compare profiles
+  tab_history: History
+  derived_intro: These values are calculated from the parameters and update when you change them.
+  compare_a: First profile
+  compare_b: Second profile
+  compare_none: The two profiles are identical.
+  compare_count: "{count} value(s) differ."
+  col_parameter: Parameter
+  col_unit: Unit
+  col_value: Value
+  history_intro: Every save keeps a copy. Pick an older version to see what changed or to restore it.
+  history_version: Saved version
+  history_none: This profile has no saved versions yet.
+  history_restore: Restore this version
+  history_restored: Version restored (not saved yet — press Save to keep it).
+  current_working: (current, with unsaved changes)

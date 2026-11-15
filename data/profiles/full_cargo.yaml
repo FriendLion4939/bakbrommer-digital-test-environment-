@@ -1,0 +1,17 @@
+name: Full cargo
+description: Cargo box loaded with 80 kg, stacked 0.5 m high.
+base: default
+validated: false
+values:
+  mass.cargo.mass:
+    value: 80.0
+    unit: kg
+    status: estimated
+  mass.cargo.height:
+    value: 0.6
+    unit: m
+    status: estimated
+  mass.cargo.stack_height:
+    value: 0.5
+    unit: m
+    status: estimated

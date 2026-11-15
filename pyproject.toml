@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bakbrommer-twin"
+version = "0.1.0"
+description = "Driving simulator and digital twin for a hybrid three-wheeled cargo moped"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pydantic>=2.5",
+    "pyyaml>=6.0",
+    "pandas>=2.1",
+    "plotly>=5.18",
+    "matplotlib>=3.8",
+    "streamlit>=1.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.10", "types-PyYAML", "pandas-stubs", "scipy-stubs"]
+
+[project.scripts]
+bakbrommer-twin = "bakbrommer_twin.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["bakbrommer_twin*"]
+
+[tool.setuptools.package-data]
+bakbrommer_twin = ["ui/translations/*.yaml", "control/sil/*.c", "control/sil/*.h"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: long-running test (performance, optimiser)"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "ANN"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # allow ·, ², ° and × in text
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["bakbrommer_twin"]
+
+[[tool.mypy.overrides]]
+module = ["plotly.*", "streamlit.*", "matplotlib.*"]
+ignore_missing_imports = true
