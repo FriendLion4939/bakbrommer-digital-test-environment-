@@ -1,0 +1,17 @@
+name: Steady-state circle (find wheel-lift speed)
+description: >-
+  Drive a 12 m radius circle to the left while the speed rises slowly from
+  10 km/h. The run stops when a front wheel lifts; the speed and cornering
+  force at that moment are the result.
+category: lateral
+initial: {speed_kmh: 10}
+param_overrides:
+  driver.max_lateral_accel: 12
+route:
+  - {type: straight, length_m: 10, speed_kmh: 10}
+  - {type: arc, radius_m: 12, angle_deg: 1800, speed_kmh: 10, speed_end_kmh: 50}
+end: {time_limit_s: 120, on_wheel_lift: true}
+metrics:
+  - {type: wheel_lift_speed}
+  - {type: wheel_lift_lateral_accel}
+  - {type: max_route_offset}

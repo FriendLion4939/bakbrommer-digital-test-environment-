@@ -1,0 +1,11 @@
+name: Split-friction acceleration
+description: Full throttle from standstill with the left front wheel on mud and the rest on dry asphalt. Shows wheel spin and how the vehicle pulls to one side.
+category: lateral
+param_overrides:
+  surface.mud.roughness_height: 0   # smooth slippery patch: look at grip only, not bumps
+route:
+  - {type: straight, length_m: 150, speed_kmh: 60, throttle: 1.0, surface: dry_asphalt, surface_left: mud}
+end: {time_limit_s: 30, at_speed_kmh: 40}
+metrics:
+  - {type: time_to_speed, speed_kmh: 30}
+  - {type: max_route_offset}

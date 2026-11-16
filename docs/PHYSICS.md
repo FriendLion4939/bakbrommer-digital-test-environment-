@@ -172,14 +172,50 @@ circuit, optionally linked.
 at the centre of pressure (pitch, roll and yaw moments). `v_rel` includes the
 wind. Cd is chosen by the cargo box shape.
 
-## 12. Sensors — `sensors/`
+## 12. Steering, road and rider
+
+**Steering geometry — `physics/steering.py`.** `centre_pivot`: the whole
+front axle turns about one pin; both wheels get the same angle and their
+contact points move (`(d, y_w) → (d·cos δ − y_w·sin δ, d·sin δ + y_w·cos δ)`),
+which shifts the tipping line. `ackermann`: positions fixed, inner wheel
+steers more (`δ_in/out = atan(L·tan δ / (L ∓ (t/2)·tan δ))`), blended by the
+Ackermann percentage. Tilting is an extension point described in the file.
+
+**Road — `sim/road.py`.** Per wheel: surface (left / right / centre track of
+the route) and road height. Roughness is a sum of four sine waves in the
+distance the wheel has rolled, scaled so the RMS height equals the surface's
+roughness height; every wheel has its own random phases (seeded). Gradient
+tilts gravity; wind is a constant velocity vector.
+
+**Wheel lift and rollover.** Nothing special is computed: when the inner
+front wheel's spring is fully extended its load is zero and the gap is the
+lift height. A rigid three-wheeler on two wheels is an inverted pendulum —
+unless the rider reacts it rolls over in about a second. The simulator shows
+exactly that when `driver.lift_reaction_gain` is 0.
+
+**Rider — `scenarios/driver.py`.** Speed plan (segment speed, cornering limit
+`√(a_lat/|κ|)`, backward braking pass), PI speed control, pure-pursuit
+steering `δ = atan(L·2·y_l/L_d²)`. Wheel-lift reaction: beyond a roll angle
+the rider steers out with a PD law on roll, closes the throttle, brakes
+lightly, and keeps the cornering demand below the vehicle's rigid lift limit
+until a recovery time after touchdown. This reproduces "one wheel in the air
+and it keeps driving".
+
+**Safety measures — `sim/safety.py`.** Rollover margin
+`1 − |F_fl − F_fr|/(F_fl + F_fr)` (1 = even, 0 = one front wheel unloaded).
+Events with start/end/peak: wheel lift, wheel spin, wheel lock, sideways
+slide, battery over-current/over-charge/under-voltage, BMS trip, motor
+derating/overheat, battery overheat, roll beyond the static tip-over angle,
+rollover (run stops).
+
+## 13. Sensors — `sensors/`
 
 `reading = round((true + bias + noise)/resolution)·resolution`, refreshed at
 the sensor's rate and delivered after its delay. The accelerometer reports
 specific force (acceleration minus gravity) in body axes; the IMU is assumed
 to sit at the CoG, aligned with the body.
 
-## 13. Energy bookkeeping — `physics/energy.py`
+## 14. Energy bookkeeping — `physics/energy.py`
 
 Every step the vehicle adds each power flow to a ledger. Check used in the
 tests and shown with every run:
@@ -192,7 +228,7 @@ tests and shown with every run:
 
 Typical error: below 0.1 % of the energy that flowed through the vehicle.
 
-## 14. Numerical method
+## 15. Numerical method
 
 * Fixed step, default 1 ms. Tested from 0.5 ms to 2 ms.
 * Stiff parts are handled implicitly: tyre relaxation decay, tyre low-speed
@@ -201,7 +237,7 @@ Typical error: below 0.1 % of the energy that flowed through the vehicle.
   NumPy values may enter the loop (they make it several times slower); the
   route builder converts everything to plain floats for this reason.
 
-## 15. Known simplifications
+## 16. Known simplifications
 
 * No camber thrust and no wheel gyroscopic moments.
 * No suspension kinematics: tyre and suspension are one vertical spring-damper
@@ -209,5 +245,9 @@ Typical error: below 0.1 % of the energy that flowed through the vehicle.
 * Point contact with the road (no tyre enveloping).
 * Drive/brake torque reaction on the body is neglected (exact at steady wheel
   speed).
+* Centre-pivot steering moves the wheel contact points but not the cargo
+  mass that sits on the turning axle (a few centimetres of CoG shift at
+  large steering angles).
+* The rider does not lean or shift weight.
 * The fuel mass does not change during a run.
 * IMU at the CoG.

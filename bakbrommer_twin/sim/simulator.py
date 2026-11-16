@@ -63,7 +63,8 @@ class Simulation:
         self.rider = RiderInputs()
         self.commands = DriveCommands()
         self.env = Environment(p.num("environment.air_temperature"))
-        self.route = route or Route(scenario.route, p.num("sim.route_sample_spacing"))
+        self.route = route or Route(scenario.route, p.num("sim.route_sample_spacing"),
+                                    p.choice("environment.default_surface"))
         self.driver: Driver = driver or RouteDriver(p, self.route)
         self.road = Road(p, self.route, self.vehicle, self.env)
         self.sensors = SensorSuite(p, self.vehicle, self.rider, self.dt)

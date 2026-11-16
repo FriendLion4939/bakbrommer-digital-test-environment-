@@ -10,7 +10,7 @@ def register(reg: Registry) -> None:
     reg.category("driver", "Driver model")
     reg.number("driver.update_rate", 100.0, "Hz", 5.0, 1000.0, "Reaction rate",
                "How often the simulated rider updates throttle, brakes and steering.")
-    reg.number("driver.max_lateral_accel", 2.5, "m/s²", 0.5, 12.0, "Cornering limit",
+    reg.number("driver.max_lateral_accel", 2.0, "m/s²", 0.5, 12.0, "Cornering limit",
                "The rider slows down so corners are taken at no more than this "
                "sideways acceleration. Raise it for sporty riding.")
     reg.number("driver.max_deceleration", 3.0, "m/s²", 0.5, 10.0, "Planned braking",
@@ -34,3 +34,24 @@ def register(reg: Registry) -> None:
                "The rider shifts up above this engine speed (manual gearbox).")
     reg.number("driver.downshift_speed", 3300.0, "rpm", 1000.0, 8000.0, "Downshift engine speed",
                "The rider shifts down below this engine speed (manual gearbox).")
+    reg.number("driver.lift_reaction_roll", 2.0, "deg", 0.5, 30.0,
+               "Wheel-lift reaction: roll angle",
+               "When the vehicle leans over further than this (a front wheel is in the "
+               "air), the rider starts steering out of the corner to bring it back down.")
+    reg.number("driver.lift_reaction_gain", 3.0, "-", 0.0, 10.0, "Wheel-lift reaction: strength",
+               "Handlebar correction per degree of lean beyond the reaction angle. "
+               "0 = the rider does not react and the vehicle will roll over.")
+    reg.number("driver.lift_reaction_damping", 0.6, "s", 0.0, 3.0,
+               "Wheel-lift reaction: damping",
+               "Handlebar correction per degree-per-second of roll rate while reacting.")
+    reg.number("driver.lift_reaction_limit", 12.0, "deg", 0.0, 60.0,
+               "Wheel-lift reaction: largest correction",
+               "The rider never corrects the handlebar by more than this for a lifted wheel.")
+    reg.number("driver.lift_reaction_brake", 10.0, "%", 0.0, 100.0,
+               "Wheel-lift reaction: braking",
+               "While a wheel is in the air the rider closes the throttle and pulls the "
+               "brakes this far, to slow down and bring the wheel back to the ground.")
+    reg.number("driver.lift_recovery_time", 1.5, "s", 0.0, 10.0,
+               "Wheel-lift reaction: recovery time",
+               "For this long after the wheel is back on the ground the rider keeps "
+               "cornering gently (below the wheel-lift limit of the vehicle).")

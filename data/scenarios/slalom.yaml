@@ -1,0 +1,14 @@
+name: Slalom
+description: Weave through six cones 9 m apart at 18 km/h. Shows how the load swings between the front wheels.
+category: lateral
+initial: {speed_kmh: 18}
+param_overrides:
+  driver.max_lateral_accel: 12
+route:
+  - {type: straight, length_m: 15, speed_kmh: 18}
+  - {type: slalom, cone_spacing_m: 9, cones: 6, lateral_offset_m: 1.0, speed_kmh: 18}
+  - {type: straight, length_m: 15, speed_kmh: 18}
+end: {time_limit_s: 60}
+metrics:
+  - {type: finish_time}
+  - {type: max_route_offset}

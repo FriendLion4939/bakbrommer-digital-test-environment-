@@ -124,6 +124,97 @@ hill_descent_10:
     top_speed: 8.61742
     wheel_lift_events: 0.0
     wheel_lock_events: 0.0
+lane_change_full_cargo:
+  end_reason: route_end
+  values:
+    battery_energy: 8037.5
+    bms_trips: 0.0
+    distance: 93.5635
+    duration: 11.41
+    finish_time: 11.41
+    fuel_used: 7.88469e-07
+    max_lateral_accel: 1.9055
+    max_roll: 0.016358
+    max_route_offset: 0.187023
+    max_speed: 8.33333
+    min_rollover_margin: 0.499082
+    peak_battery_current: 11.6769
+    rolled_over: 0.0
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+roundabout:
+  end_reason: route_end
+  values:
+    battery_energy: 11611.7
+    bms_trips: 0.0
+    distance: 112.999
+    duration: 19.45
+    finish_time: 19.45
+    fuel_used: 2.3377e-06
+    max_lateral_accel: 2.3763
+    max_roll: 0.0151108
+    max_route_offset: 0.224977
+    max_speed: 9.23658
+    min_rollover_margin: 0.111487
+    peak_battery_current: 32.2966
+    rolled_over: 0.0
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+slalom:
+  end_reason: route_end
+  values:
+    battery_energy: 6338.57
+    bms_trips: 0.0
+    distance: 93.9545
+    duration: 19.04
+    finish_time: 19.04
+    fuel_used: 1.48816e-06
+    max_lateral_accel: 3.37847
+    max_roll: 0.0411107
+    max_route_offset: 0.339656
+    max_speed: 5.07549
+    min_rollover_margin: 0.0
+    peak_battery_current: 12.9658
+    rolled_over: 0.0
+    wheel_lift_events: 1.0
+    wheel_lock_events: 0.0
+split_friction_accel:
+  end_reason: speed_reached
+  values:
+    battery_energy: 9719.22
+    bms_trips: 0.0
+    distance: 33.0592
+    duration: 5.45
+    fuel_used: 2.26392e-06
+    max_lateral_accel: 0.0763909
+    max_roll: 0.000437289
+    max_route_offset: 0.0234472
+    max_speed: 11.1118
+    min_rollover_margin: 0.951544
+    peak_battery_current: 32.2967
+    rolled_over: 0.0
+    time_0_30: 3.69733
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+steady_circle:
+  end_reason: wheel_lift
+  values:
+    battery_energy: 8732.52
+    bms_trips: 0.0
+    distance: 103.36
+    duration: 27.37
+    fuel_used: 1.77826e-06
+    max_lateral_accel: 2.68933
+    max_roll: 0.0255804
+    max_route_offset: 0.138617
+    max_speed: 5.48655
+    min_rollover_margin: 0.0
+    peak_battery_current: 16.2545
+    rolled_over: 0.0
+    wheel_lift_events: 1.0
+    wheel_lift_lateral_accel: 2.66292
+    wheel_lift_speed: 5.47914
+    wheel_lock_events: 0.0
 top_speed:
   end_reason: time_limit
   values:

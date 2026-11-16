@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from bakbrommer_twin.params.definitions.wheels import SURFACE_NAMES
 from bakbrommer_twin.params.registry import Registry
 from bakbrommer_twin.params.types import Status
 
@@ -38,6 +39,10 @@ def register(reg: Registry) -> None:
                "Distance behind the front axle at which the cross-wind force acts.", EST)
 
     reg.category("environment", "Environment")
+    reg.choice("environment.default_surface", SURFACE_NAMES[0], SURFACE_NAMES,
+               "Default road surface",
+               "Surface used wherever a scenario does not name one. Set it to "
+               "wet_asphalt in a wet-weather profile.")
     reg.number("environment.air_density", 1.225, "kg/m³", 0.9, 1.5, "Air density",
                "Density of the air (1.225 at sea level and 15 °C).")
     reg.number("environment.air_temperature", 20.0, "°C", -20.0, 45.0, "Air temperature",

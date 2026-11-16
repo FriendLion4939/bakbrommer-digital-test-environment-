@@ -13,7 +13,7 @@ from bakbrommer_twin.sim.simulator import run_scenario
 
 
 def _route(*segments: dict[str, object]) -> Route:
-    return Route([Segment.model_validate(s) for s in segments], 0.25)
+    return Route([Segment.model_validate(s) for s in segments], 0.25, "dry_asphalt")
 
 
 def test_plan_slows_for_corners_and_brakes_in_time() -> None:

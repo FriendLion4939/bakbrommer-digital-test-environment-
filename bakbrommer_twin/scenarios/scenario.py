@@ -47,7 +47,7 @@ class Segment(_Strict):
     points: list[tuple[float, float]] | None = None  # waypoints: [forward m, left m]
     speed_kmh: float = Field(default=30.0, ge=0)  # target speed at the segment start
     speed_end_kmh: float | None = Field(default=None, ge=0)  # ramp to this at the end
-    surface: str = SURFACE_NAMES[0]
+    surface: str | None = None  # None = the profile's environment.default_surface
     surface_left: str | None = None  # under the left front wheel, if different
     surface_right: str | None = None  # under the right front wheel, if different
     gradient_pct: float = Field(default=0.0, ge=-40, le=40)  # + = uphill

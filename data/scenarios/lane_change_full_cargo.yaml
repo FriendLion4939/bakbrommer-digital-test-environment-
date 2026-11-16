@@ -1,0 +1,17 @@
+name: Lane change with full cargo
+description: Swerve 3 m to the left and back at 30 km/h with 80 kg in the box (an obstacle-avoidance manoeuvre).
+category: lateral
+profile: full_cargo
+initial: {speed_kmh: 30}
+param_overrides:
+  driver.max_lateral_accel: 12
+route:
+  - {type: straight, length_m: 20, speed_kmh: 30}
+  - {type: lane_change, length_m: 18, lateral_offset_m: 3.0, speed_kmh: 30}
+  - {type: straight, length_m: 12, speed_kmh: 30}
+  - {type: lane_change, length_m: 18, lateral_offset_m: -3.0, speed_kmh: 30}
+  - {type: straight, length_m: 25, speed_kmh: 30}
+end: {time_limit_s: 60}
+metrics:
+  - {type: finish_time}
+  - {type: max_route_offset}

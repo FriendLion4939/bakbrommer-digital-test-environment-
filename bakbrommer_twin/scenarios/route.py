@@ -74,7 +74,8 @@ def _local_polyline(segment: Segment, step: float) -> tuple[Array, Array, float]
 class Route:
     """A sampled path with per-sample attributes (all SI units)."""
 
-    def __init__(self, segments: Sequence[Segment], spacing: float) -> None:
+    def __init__(self, segments: Sequence[Segment], spacing: float,
+                 default_surface: str) -> None:
         self.spacing = spacing
         self.has_path = True
         xs: list[Array] = []
@@ -130,9 +131,10 @@ class Route:
             self.grade.append(segment.gradient_pct / 100.0)
             self.throttle.append(math.nan if segment.throttle is None else segment.throttle)
             self.brake.append(math.nan if segment.brake is None else segment.brake)
-            self.surface_center.append(segment.surface)
-            self.surface_left.append(segment.surface_left or segment.surface)
-            self.surface_right.append(segment.surface_right or segment.surface)
+            surface = segment.surface or default_surface
+            self.surface_center.append(surface)
+            self.surface_left.append(segment.surface_left or surface)
+            self.surface_right.append(segment.surface_right or surface)
 
     def __len__(self) -> int:
         return len(self.s)

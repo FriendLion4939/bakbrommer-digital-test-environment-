@@ -1,0 +1,24 @@
+name: Wet weather
+description: Rainy day. Wet asphalt wherever a scenario names no surface, cool air, some wind, and a more careful rider.
+base: default
+validated: false
+values:
+  environment.default_surface:
+    value: wet_asphalt
+    status: measured
+  environment.air_temperature:
+    value: 8.0
+    unit: °C
+    status: estimated
+  environment.wind_speed:
+    value: 15.0
+    unit: km/h
+    status: estimated
+  driver.max_lateral_accel:
+    value: 1.8
+    unit: m/s²
+    status: estimated
+  driver.max_deceleration:
+    value: 2.2
+    unit: m/s²
+    status: estimated

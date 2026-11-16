@@ -18,6 +18,17 @@ point a preview distance L_d ahead on the route; the arc through that point
 has curvature κ = 2·y_l/L_d² (y_l = sideways offset of the aim point in the
 vehicle frame) and needs the steering angle δ = atan(wheelbase·κ).
 
+Wheel-lift reaction: when the vehicle leans beyond a set roll angle (a front
+wheel is in the air) the rider steers out of the corner, in proportion to the
+excess roll angle and the roll rate (a PD controller on roll, limited to a
+largest correction), closes the throttle and brakes lightly. While reacting,
+and for a recovery time afterwards, the rider also does not ask for more
+cornering than the vehicle's wheel-lift limit (steering curvature ≤
+a_lift/v², with a_lift from ``physics/mass.py``). This is how a real rider
+keeps a three-wheeler balanced on two wheels and brings the wheel back down
+instead of rolling over. With the gain at zero the rider holds the line
+regardless.
+
 Gear changes (manual gearbox): shift up/down when the engine speed that the
 present road speed would give crosses the shift speeds.
 """
@@ -28,6 +39,7 @@ import math
 from typing import Protocol
 
 from bakbrommer_twin.params.paramset import ParamSet
+from bakbrommer_twin.physics import mass
 from bakbrommer_twin.physics.inputs import RiderInputs
 from bakbrommer_twin.physics.vehicle import Vehicle
 from bakbrommer_twin.physics.wheels import REAR
@@ -73,6 +85,17 @@ class RouteDriver:
         self.full_brake_decel = params.num("driver.full_brake_deceleration")
         self.rear_brake_ratio = params.num("driver.rear_brake_ratio")
         self.steer_rate = params.num("driver.steer_rate_limit")
+        self.lift_roll = params.num("driver.lift_reaction_roll")
+        self.lift_gain = params.num("driver.lift_reaction_gain")
+        self.lift_damping = params.num("driver.lift_reaction_damping")
+        self.lift_limit = params.num("driver.lift_reaction_limit")
+        self.lift_brake = params.num("driver.lift_reaction_brake")
+        self.lift_recovery = params.num("driver.lift_recovery_time")
+        # Cornering acceleration at which a front wheel lifts (the rider knows the machine).
+        self.lift_accel = min(mass.lift_threshold_accel(params, turn_left=True),
+                              mass.lift_threshold_accel(params, turn_left=False))
+        self.reacting_to_lift = False
+        self._recovery_left = 0.0  # s of careful cornering still to go
         self.upshift = params.num("driver.upshift_speed")
         self.downshift = params.num("driver.downshift_speed")
         self.wheelbase = params.num("geometry.wheelbase")
@@ -109,7 +132,22 @@ class RouteDriver:
         local_y = cos_y * dy - sin_y * dx
         distance_sq = local_x * local_x + local_y * local_y
         curvature = 2.0 * local_y / distance_sq if distance_sq > 0.0 else 0.0
+        # Wheel-lift reaction (see module docstring). Positive roll = left side up.
+        roll = chassis.roll
+        reacting = abs(roll) > self.lift_roll and self.lift_gain > 0.0
+        self.reacting_to_lift = reacting
+        if reacting:
+            self._recovery_left = self.lift_recovery
+        elif self._recovery_left > 0.0:
+            self._recovery_left -= dt
+        if (reacting or self._recovery_left > 0.0) and speed != 0.0:
+            gentle = self.lift_accel / (speed * speed)  # curvature that stays below the limit
+            curvature = max(-gentle, min(gentle, curvature))
         wanted = math.atan(self.wheelbase * curvature) * self.steering_ratio
+        if reacting:
+            excess = roll - self.lift_roll if roll > 0.0 else roll + self.lift_roll
+            correction = self.lift_gain * excess + self.lift_damping * chassis.p
+            wanted -= max(-self.lift_limit, min(self.lift_limit, correction))
         wanted = max(-self.max_handlebar, min(self.max_handlebar, wanted))
         change = wanted - rider.steer
         limit = self.steer_rate * dt
@@ -140,6 +178,9 @@ class RouteDriver:
                 command = min(command, -self.max_deceleration / self.full_brake_decel)
             throttle = max(0.0, min(1.0, command))
             brake = max(0.0, min(1.0, -command))
+        if self.reacting_to_lift:  # wheel in the air: off the throttle, light braking
+            throttle = 0.0
+            brake = max(brake, self.lift_brake)
         rider.throttle = throttle
         rider.brake_front = brake
         rider.brake_rear = min(1.0, brake * self.rear_brake_ratio)

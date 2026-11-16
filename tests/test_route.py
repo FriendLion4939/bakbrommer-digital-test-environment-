@@ -9,7 +9,7 @@ from bakbrommer_twin.scenarios.scenario import Segment
 
 
 def _route(*segments: dict[str, object], spacing: float = 0.25) -> Route:
-    return Route([Segment.model_validate(s) for s in segments], spacing)
+    return Route([Segment.model_validate(s) for s in segments], spacing, "dry_asphalt")
 
 
 def test_straight() -> None:

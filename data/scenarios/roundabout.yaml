@@ -1,0 +1,14 @@
+name: Roundabout
+description: Approach at 30 km/h, turn right onto a 12 m roundabout, go half-way round to the left and leave again. The rider slows down for the bends.
+category: lateral
+initial: {speed_kmh: 30}
+route:
+  - {type: straight, length_m: 30, speed_kmh: 30}
+  - {type: arc, radius_m: 8, angle_deg: -50, speed_kmh: 30}
+  - {type: arc, radius_m: 12, angle_deg: 190, speed_kmh: 30}
+  - {type: arc, radius_m: 8, angle_deg: -50, speed_kmh: 30}
+  - {type: straight, length_m: 30, speed_kmh: 30}
+end: {time_limit_s: 60}
+metrics:
+  - {type: finish_time}
+  - {type: max_route_offset}

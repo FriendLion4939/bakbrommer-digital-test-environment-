@@ -89,3 +89,51 @@ One status note per phase, newest at the bottom.
 * Whether the petrol throttle is a cable or a servo is unknown; it is the
   parameter `engine.throttle_by_wire` (default: cable).
 * Reverse driving is not modelled.
+
+## Phase 3 — lateral and three-wheeler dynamics ✅
+
+**Done**
+* Cornering uses the Phase 2 chassis and tyre model unchanged: load transfer,
+  wheel lift and rollover come out of the push-only wheel springs.
+* Steering geometry: centre-pivot (wheels move with the axle) and Ackermann
+  (percentage adjustable); tilting documented as an extension point.
+* Road model: surface per wheel (split friction), seeded bumps per surface,
+  gradient, wind. New parameter `environment.default_surface`.
+* Rider: pure-pursuit path following, and a **wheel-lift reaction** (steer
+  out, close throttle, light brake, gentle cornering until recovered).
+  Without it a three-wheeler on two wheels rolls over within a second —
+  the simulator shows this when the reaction gain is set to 0.
+* Safety report: wheel lift (with height), spin, lock, sideways slide,
+  rollover margin, tip-over point, rollover (stops the run).
+* Route segment types: slalom, lane change, free waypoints.
+* Scenarios: steady-state circle (finds the lift speed), slalom, roundabout,
+  lane change with full cargo, split-friction acceleration.
+* Profile "Wet weather".
+
+**Checked**
+* 232 tests pass.
+* Steady circle: yaw rate = v/R within 3 %, lateral acceleration = v²/R
+  within 6 %, left/right mirror exactly.
+* Front load difference in a corner equals `m·a_y·h/(t/2)` within 8 % (a
+  single rear wheel carries no roll moment).
+* Wheel lift in the circle test at 0.27 g / 19.7 km/h on a 12 m radius; the
+  independent rigid-body formula gives 0.285 g. Higher cargo lifts sooner,
+  wider track later.
+* Bump height statistics match the surface parameter; same seed → identical
+  run.
+
+**Findings worth knowing (with the estimated default geometry!)**
+* The wheel-lift limit is low: about 0.28 g. The centre of gravity is 0.59 m
+  high and only 40 % of the weight is on the 0.85 m wide front axle. Cargo in
+  the box *improves* this (0.40 g with 80 kg low in the box) because it moves
+  the centre of gravity forward. Measure CoG height and position — these
+  numbers decide everything about wheel lift.
+* The default rider therefore plans corners at 2.0 m/s² (0.2 g). Sporty
+  settings (3.5 m/s²) give repeated 20–40 mm wheel lifts but no rollover.
+* With both motors given the same torque (the simple `direct` controller),
+  the unloaded inner wheel spins up in hard cornering and on split friction.
+  Traction control and torque vectoring in Phase 4 address this.
+
+**Limits**
+* The rider model does not lean. Camber thrust and gyroscopic effects are not
+  modelled (see `docs/PHYSICS.md`, "Known simplifications").
