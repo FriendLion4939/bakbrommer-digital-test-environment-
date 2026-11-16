@@ -28,7 +28,7 @@ bakbrommer-twin = "bakbrommer_twin.cli:main"
 include = ["bakbrommer_twin*"]
 
 [tool.setuptools.package-data]
-bakbrommer_twin = ["ui/translations/*.yaml", "control/sil/*.c", "control/sil/*.h"]
+bakbrommer_twin = ["translations/*.yaml", "control/sil/*.c", "control/sil/*.h"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

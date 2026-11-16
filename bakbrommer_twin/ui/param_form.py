@@ -14,11 +14,11 @@ from typing import cast
 
 import streamlit as st
 
+from bakbrommer_twin.i18n import param_description, param_label, t
 from bakbrommer_twin.params import REGISTRY
 from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.params.types import Kind, ParamDef, ParamError, ParamValue, Status
 from bakbrommer_twin.ui import state
-from bakbrommer_twin.ui.i18n import param_description, param_label, t
 
 STATUSES = list(Status)
 NEEDS_MEASURING = (Status.DEFAULT, Status.ESTIMATED)

@@ -135,6 +135,15 @@ class ParamSet:
             if not _same(self._values[name], other._values[name])
         ]
 
+    @classmethod
+    def from_display_dict(cls, registry: Registry,
+                          values: Mapping[str, ParamValue]) -> ParamSet:
+        """Rebuild a set from :meth:`as_display_dict` output (unknown names are errors)."""
+        params = cls(registry)
+        for name, value in values.items():
+            params.set_display(name, value)
+        return params
+
     def as_display_dict(self) -> dict[str, ParamValue]:
         """All values in friendly units (for snapshots stored with a run)."""
         return {name: self.display(name) for name in self.registry.names()}

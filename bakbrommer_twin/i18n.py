@@ -1,4 +1,4 @@
-"""Interface texts. All labels live in ``translations/<language>.yaml``.
+"""Interface and report texts. All labels live in ``translations/<language>.yaml``.
 
 Use the function ``t`` with a key for every text shown in the UI. To add a language, copy
 ``translations/en.yaml`` to e.g. ``nl.yaml`` and translate the values; it then

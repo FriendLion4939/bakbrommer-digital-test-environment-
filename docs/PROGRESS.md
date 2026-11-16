@@ -16,7 +16,7 @@ One status note per phase, newest at the bottom.
   angle; shown as calculated values.
 * Web UI skeleton with the auto-generated parameter editor (edit, save,
   save-as, undo, delete, compare, history, calculated values).
-* Translation file (`ui/translations/en.yaml`), command line tool,
+* Translation file (`translations/en.yaml`), command line tool,
   `start.sh` / `start.bat`, `Dockerfile` + `docker-compose.yml`.
 * Docs: PLAN, ARCHITECTURE, HOW_TO_CHANGE, CLAUDE.md (grown each phase).
 * Tests: units, registry, parameter sets, profiles, mass properties, UI
@@ -160,7 +160,7 @@ One status note per phase, newest at the bottom.
   (150 A BMS)".
 
 **Checked**
-* 293 tests pass, including one test per controller block and closed-loop
+* 272 tests pass, including one test per controller block and closed-loop
   tests: battery current held at the limit (35 A and 150 A setups), no BMS
   trips, wheel spin on split friction removed without losing drive, outer
   wheel favoured in corners, torque cut near the wheel-lift limit, energy

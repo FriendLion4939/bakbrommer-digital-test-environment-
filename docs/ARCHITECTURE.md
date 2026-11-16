@@ -138,5 +138,5 @@ data/profiles/*.yaml ── ProfileStore.load ─┘ (base profile first, then o
 | change the simulated rider | `scenarios/driver.py` |
 | add a controller | `control/` + `control/factory.py` |
 | add a calculated value to the UI | `params/derived.py` |
-| change a UI text | `ui/translations/en.yaml` |
+| change a UI text | `translations/en.yaml` |
 | add a UI page | `ui/pages/` + `PAGES` in `ui/app.py` |

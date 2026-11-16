@@ -39,7 +39,7 @@ profile need to be listed.
 
 ## Change or add a UI text / add a language
 
-Texts are in `bakbrommer_twin/ui/translations/en.yaml`. For Dutch, copy the
+Texts are in `bakbrommer_twin/translations/en.yaml`. For Dutch, copy the
 file to `nl.yaml` and translate the values; the language picker finds it.
 
 ## Add a UI page
@@ -117,4 +117,4 @@ exported and selectable in the charts.
 ## Add a safety check
 
 Append a `_Check(...)` in `SafetyMonitor.__init__` (`sim/safety.py`) and add
-the text `event.<kind>` to `ui/translations/en.yaml`.
+the text `event.<kind>` to `translations/en.yaml`.

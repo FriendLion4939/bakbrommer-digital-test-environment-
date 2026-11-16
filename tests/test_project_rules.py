@@ -6,8 +6,7 @@ import ast
 import re
 from pathlib import Path
 
-from bakbrommer_twin import paths
-from bakbrommer_twin.ui import i18n
+from bakbrommer_twin import i18n, paths
 
 PACKAGE = paths.PROJECT_ROOT / "bakbrommer_twin"
 MAX_LINES = 400
@@ -56,7 +55,7 @@ def _translation_keys_in_code() -> set[str]:
 def test_every_translation_key_used_in_code_exists() -> None:
     english = i18n.load_language("en")
     missing = sorted(k for k in _translation_keys_in_code() if k not in english)
-    assert not missing, f"Add these keys to ui/translations/en.yaml: {missing}"
+    assert not missing, f"Add these keys to translations/en.yaml: {missing}"
 
 
 def test_no_unused_translation_keys() -> None:
@@ -65,7 +64,7 @@ def test_no_unused_translation_keys() -> None:
         k for k in i18n.load_language("en")
         if k not in used and not k.startswith(DYNAMIC_KEY_PREFIXES)
     )
-    assert not unused, f"Remove these unused keys from ui/translations/en.yaml: {unused}"
+    assert not unused, f"Remove these unused keys from translations/en.yaml: {unused}"
 
 
 def test_other_languages_have_no_unknown_keys() -> None:

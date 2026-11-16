@@ -5,13 +5,13 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from bakbrommer_twin.i18n import t
 from bakbrommer_twin.params import REGISTRY
 from bakbrommer_twin.params.derived import compute_derived
 from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.params.profile import Profile, ProfileStore, compare
 from bakbrommer_twin.params.types import ParamError, ParamValue
 from bakbrommer_twin.ui import param_form, state
-from bakbrommer_twin.ui.i18n import t
 
 
 def _show(value: ParamValue) -> str:

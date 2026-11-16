@@ -35,7 +35,7 @@ bakbrommer-twin ui                 # start the web interface on port 8501
 7. **Type hints everywhere** (`mypy --strict` passes), a docstring on every
    module and public function/class, no dead code, no TODO stubs.
 8. **All UI text goes through `t("key")`** with the text in
-   `ui/translations/en.yaml`.
+   `translations/en.yaml`.
 9. **Never present made-up data as real.** Example logs are synthetic and
    say so. Results stay labelled "not validated" until a profile has been
    calibrated against real ride data.

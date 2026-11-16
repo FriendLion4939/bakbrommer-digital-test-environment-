@@ -11,8 +11,9 @@ from collections.abc import Callable
 
 import streamlit as st
 
-from bakbrommer_twin.ui import i18n, state
-from bakbrommer_twin.ui.i18n import t
+from bakbrommer_twin import i18n
+from bakbrommer_twin.i18n import t
+from bakbrommer_twin.ui import state
 from bakbrommer_twin.ui.pages import parameters
 
 # (url path, translation key of the title, material icon, render function)
