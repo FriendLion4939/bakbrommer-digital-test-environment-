@@ -11,6 +11,7 @@ from bakbrommer_twin.params.definitions import (
     battery,
     brakes,
     control,
+    control_reference,
     driver,
     engine,
     geometry,
@@ -23,7 +24,7 @@ from bakbrommer_twin.params.definitions import (
 from bakbrommer_twin.params.registry import Registry
 
 _MODULES = (geometry, wheels, steering, motor, battery, engine, brakes, aero, sensors,
-            control, driver, sim)
+            control, control_reference, driver, sim)
 
 
 def build_registry() -> Registry:

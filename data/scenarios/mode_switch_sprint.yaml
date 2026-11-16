@@ -1,0 +1,13 @@
+name: Electric sprint, then back to hybrid
+description: Full-throttle sprint in Standalone electric mode (petrol engine off), then the rider switches to Normal after 120 m - the controller starts the engine and blends it in.
+category: sport
+initial: {ride_mode: standalone_electric, engine_running: false}
+route:
+  - {type: straight, length_m: 500, speed_kmh: 80, throttle: 1.0}
+events:
+  - {at_distance_m: 120, set_mode: normal}
+end: {time_limit_s: 60}
+metrics:
+  - {type: time_to_speed, speed_kmh: 30}
+  - {type: finish_time}
+  - {type: top_speed}

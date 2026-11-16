@@ -1,0 +1,10 @@
+name: Future battery (150 A BMS)
+description: The planned upgrade. BMS allows 150 A, each motor controller 70 A, so the hub motors can use their full power.
+base: default
+validated: false
+values:
+  battery.bms_discharge_limit: {value: 150.0, unit: A, status: estimated}
+  battery.bms_charge_limit: {value: 40.0, unit: A, status: estimated}
+  motor.line_current_limit: {value: 70.0, unit: A, status: estimated}
+  control.limits.battery_current: {value: 140.0, unit: A, status: estimated}
+  control.limits.charge_current: {value: 35.0, unit: A, status: estimated}

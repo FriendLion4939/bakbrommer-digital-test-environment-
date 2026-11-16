@@ -121,6 +121,10 @@ class Route:
         self.surface_left: list[str] = []
         self.surface_center: list[str] = []
         self.surface_right: list[str] = []
+        # Planned halts: (sample index, seconds to wait), in route order.
+        self.stops: list[tuple[int, float]] = [
+            (self.index_at(start), float(segment.stop_s))
+            for start, segment in zip(starts, segments, strict=True) if segment.stop_s]
         for position, index in zip(self.s, self.segment, strict=True):
             segment = segments[index]
             fraction = min(1.0, max(0.0, (position - starts[index]) / lengths[index]))

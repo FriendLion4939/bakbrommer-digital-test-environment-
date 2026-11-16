@@ -14,7 +14,8 @@ height) and wavelengths spread around the surface's typical wavelength λ by
 the fixed factors m_j. Each wheel has its own random start phases, so left
 and right wheels see different bumps. Phases are integrated, so a change of
 surface never makes the road jump. A real tyre rolls over small bumps more
-softly than this point-contact model (no "enveloping").
+softly than this point-contact model (no "enveloping"). Only the height is
+passed on; see ``physics/chassis.py`` for why its rate of change is not.
 """
 
 from __future__ import annotations
@@ -78,7 +79,7 @@ class Road:
             target = surface.roughness_height * _AMPLITUDE_PER_RMS
             amplitude = self._amplitude[i]
             if target == 0.0 and amplitude == 0.0:
-                wheel.ground = wheel.ground_rate = 0.0
+                wheel.ground = 0.0
                 continue
             travel = wheel.v_long * dt  # distance rolled this step, m
             wavelength = surface.roughness_wavelength
@@ -86,12 +87,9 @@ class Road:
             amplitude += (target - amplitude) * min(1.0, abs(travel) / wavelength)
             self._amplitude[i] = amplitude
             phases = self._phases[i]
-            height = slope = 0.0
+            height = 0.0
             for j, factor in enumerate(_WAVELENGTH_FACTORS):
-                wave_number = 2.0 * math.pi / (wavelength * factor)  # rad/m
-                phase = phases[j] + wave_number * travel
+                phase = phases[j] + 2.0 * math.pi / (wavelength * factor) * travel
                 phases[j] = phase
                 height += math.sin(phase)
-                slope += wave_number * math.cos(phase)
             wheel.ground = amplitude * height
-            wheel.ground_rate = amplitude * slope * wheel.v_long

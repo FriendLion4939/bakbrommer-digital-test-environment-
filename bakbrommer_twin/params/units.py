@@ -60,6 +60,7 @@ UNITS: dict[str, tuple[str, float, float]] = {
     "Nm/A": ("Nm/A", 1.0, 0.0),
     "Nm/(rad/s)": ("Nm/(rad/s)", 1.0, 0.0),
     "Nm/rad": ("Nm/rad", 1.0, 0.0),
+    "Nm/s": ("Nm/s", 1.0, 0.0),
     "Nm·s/rad": ("Nm·s/rad", 1.0, 0.0),
     "Nm/rpm": ("Nm·s/rad", 60.0 / (2.0 * math.pi), 0.0),
     # power and energy

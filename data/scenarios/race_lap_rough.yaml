@@ -1,0 +1,22 @@
+name: Rough-terrain race lap
+description: Sprint, brake, sprint on gravel and grass with tight bends and a short climb, ridden hard in Sport mode. Shows wheel lift on bumps, traction control and brake use.
+category: sport
+initial: {speed_kmh: 0, ride_mode: sport}
+param_overrides:
+  driver.max_lateral_accel: 2.3
+  driver.max_deceleration: 2.5
+route:
+  - {type: straight, length_m: 60, speed_kmh: 55, surface: gravel}
+  - {type: arc, radius_m: 9, angle_deg: 120, speed_kmh: 55, surface: gravel}
+  - {type: straight, length_m: 40, speed_kmh: 55, surface: gravel}
+  - {type: arc, radius_m: 7, angle_deg: -150, speed_kmh: 55, surface: gravel}
+  - {type: straight, length_m: 50, speed_kmh: 55, surface: grass}
+  - {type: arc, radius_m: 12, angle_deg: 90, speed_kmh: 55, surface: grass}
+  - {type: straight, length_m: 60, speed_kmh: 55, surface: gravel, gradient_pct: 6}
+  - {type: arc, radius_m: 10, angle_deg: 120, speed_kmh: 55, surface: gravel}
+  - {type: straight, length_m: 40, speed_kmh: 55, surface: gravel, gradient_pct: -6}
+end: {time_limit_s: 120}
+metrics:
+  - {type: finish_time}
+  - {type: top_speed}
+  - {type: max_route_offset}

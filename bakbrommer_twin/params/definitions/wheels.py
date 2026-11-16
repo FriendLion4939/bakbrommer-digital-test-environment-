@@ -14,10 +14,10 @@ EST = Status.ESTIMATED
 _SURFACE_DEFAULTS: dict[str, tuple[float, float, float, float, float, float]] = {
     "dry_asphalt": (0.95, 0.80, 1.0, 0.015, 0.0, 3.0),
     "wet_asphalt": (0.65, 0.75, 1.0, 0.016, 0.0, 3.0),
-    "gravel": (0.55, 0.95, 2.0, 0.030, 6.0, 1.0),
-    "grass": (0.40, 0.90, 1.8, 0.060, 12.0, 2.0),
-    "mud": (0.30, 0.95, 3.0, 0.120, 10.0, 3.0),
-    "cobblestones": (0.60, 0.80, 1.2, 0.025, 4.0, 0.15),
+    "gravel": (0.55, 0.95, 2.0, 0.030, 4.0, 2.5),
+    "grass": (0.40, 0.90, 1.8, 0.060, 8.0, 4.0),
+    "mud": (0.30, 0.95, 3.0, 0.120, 8.0, 5.0),
+    "cobblestones": (0.60, 0.80, 1.2, 0.025, 3.0, 0.15),
 }
 SURFACE_NAMES: tuple[str, ...] = tuple(_SURFACE_DEFAULTS)
 AXLES: tuple[str, ...] = ("front", "rear")
@@ -119,4 +119,5 @@ def _surfaces(reg: Registry) -> None:
                    "Typical (RMS) height of bumps. 0 = perfectly smooth.", EST)
         reg.number(f"surface.{name}.roughness_wavelength", wavelength, "m", 0.05, 20.0,
                    f"{title}: roughness wavelength",
-                   "Typical length of one bump.", EST)
+                   "Typical length of one bump. Bumps from 0.6 to 2.9 times this length "
+                   "are generated.", EST)

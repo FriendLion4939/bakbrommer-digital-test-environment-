@@ -30,7 +30,8 @@ def store(tmp_path: Path) -> ProfileStore:
 
 @pytest.fixture
 def quiet(params: ParamSet) -> ParamSet:
-    """Defaults with ideal sensors and no BMS trip: for testing the physics alone."""
+    """Defaults with ideal sensors, direct controller, no BMS trip: the physics alone."""
     params.set("sensors.ideal", True)
+    params.set("control.controller_type", "direct")
     params.set("battery.bms_trip_enabled", False)
     return params

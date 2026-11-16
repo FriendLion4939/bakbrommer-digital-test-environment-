@@ -53,6 +53,7 @@ class Segment(_Strict):
     gradient_pct: float = Field(default=0.0, ge=-40, le=40)  # + = uphill
     throttle: float | None = Field(default=None, ge=0, le=1)  # fixed throttle, no speed control
     brake: float | None = Field(default=None, ge=0, le=1)  # fixed brake lever position
+    stop_s: float | None = Field(default=None, gt=0)  # halt this long at the segment start
 
     @model_validator(mode="after")
     def _check(self) -> Segment:

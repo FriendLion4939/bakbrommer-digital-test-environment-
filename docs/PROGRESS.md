@@ -137,3 +137,51 @@ One status note per phase, newest at the bottom.
 **Limits**
 * The rider model does not lean. Camber thrust and gyroscopic effects are not
   modelled (see `docs/PHYSICS.md`, "Known simplifications").
+
+## Phase 4 — controller, ride modes, sensors ✅
+
+**Done**
+* Reference controller (`control/reference/`), one small file per block:
+  speed estimate, ride modes with gliding mode changes, petrol engine
+  start/stop, torque blending, regen (coast + brake), rollover protection,
+  torque vectoring, traction control and regen anti-lock, battery current /
+  low-voltage / temperature limits, torque rate limit. 91 tuning parameters,
+  all in the UI. Described in `docs/CONTROLLER.md`.
+* It is now the default controller; `direct` remains for physics tests.
+* Sensors with noise, bias, resolution, rate and delay feed the controller
+  (built in Phase 2, now exercised by the brain).
+* Rider model reworked: acceleration-based speed control that knows the real
+  brake strength, planned halts (`stop_s`), anti-windup, cornering no harder
+  than its limit plus a correction margin, balance reaction on wheel lift.
+* Vertical damping now acts on body motion only (a damper fed with road
+  height rate, without a wheel mass in between, exaggerated every bump).
+* New scenarios: rough-terrain race lap, city stop-and-go, energy/range
+  cycle, electric sprint then back to hybrid. New profile "Future battery
+  (150 A BMS)".
+
+**Checked**
+* 293 tests pass, including one test per controller block and closed-loop
+  tests: battery current held at the limit (35 A and 150 A setups), no BMS
+  trips, wheel spin on split friction removed without losing drive, outer
+  wheel favoured in corners, torque cut near the wheel-lift limit, energy
+  recovered downhill without over-charging, modes ranked eco < normal ≤
+  sport, eco launches electrically then starts the engine, standalone keeps
+  the engine off and hybrid brings it back, no torque jerk on a mode change,
+  realistic sensors change the 0–30 km/h time by less than 5 %.
+
+**Example results (estimated parameters!)**
+| Scenario | Result |
+|---|---|
+| 0–50 km/h, Normal mode | 8.2 s, battery current ≤ 30 A |
+| 0–30 km/h, Standalone electric, 35 A BMS / 150 A BMS | 7.2 s / 3.8 s |
+| Top speed, Normal mode | 60 km/h (electric assist has faded out) |
+| City stop-and-go (538 m, 4 stops) | 96 s |
+| Range cycle (2.9 km) | 27 Wh/km and 1.8 L/100 km → about 79 km on the battery, 228 km on the tank |
+| Rough race lap, Sport | 52 s, 31 wheel lifts (bumps and corners), no rollover |
+
+**Open questions for the builder** (each is a parameter with a default)
+* Is the petrol throttle a cable or a servo? (`engine.throttle_by_wire`)
+* Can the controller start and stop the petrol engine?
+  (`control.engine_auto_start_stop`)
+* Do the Fardrivers accept a torque command over CAN, and how fast do they
+  follow it? (`motor.torque_response_time`)

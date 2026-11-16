@@ -48,8 +48,11 @@ def test_lane_change_with_cargo_stays_on_three_wheels() -> None:
     assert (result.metric("min_rollover_margin") or 0.0) > 0.2
 
 
-def test_split_friction_spins_the_wheel_on_mud_but_stays_straight() -> None:
+def test_split_friction_is_handled_by_traction_control_and_stays_straight() -> None:
     result = library_run("split_friction_accel")
     assert result.meta.end_reason == "speed_reached"
-    assert {e.subject for e in result.meta.events if e.kind == "wheel_spin"} == {"fl"}
+    assert not [e for e in result.meta.events if e.kind == "wheel_spin"]
+    # less grip on the left: traction control trims the left motor, not the right one
+    assert result["ctl_traction_left"].max() > 0.1
+    assert result["torque_fl"].mean() < result["torque_fr"].mean()
     assert (result.metric("max_route_offset") or 9.0) < 0.3

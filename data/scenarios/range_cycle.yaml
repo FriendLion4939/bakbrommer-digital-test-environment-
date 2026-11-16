@@ -1,0 +1,16 @@
+name: Energy and range cycle
+description: A 3 km mixed ride - town speed, a 50 km/h stretch, a 4 % hill up and down and two stops. The range figures in the summary come from this ride.
+category: energy
+route:
+  - {type: straight, length_m: 300, speed_kmh: 30}
+  - {type: arc, radius_m: 15, angle_deg: 90, speed_kmh: 30}
+  - {type: straight, length_m: 700, speed_kmh: 50}
+  - {type: straight, length_m: 400, speed_kmh: 45, gradient_pct: 4, stop_s: 5}
+  - {type: arc, radius_m: 20, angle_deg: 180, speed_kmh: 40}
+  - {type: straight, length_m: 400, speed_kmh: 45, gradient_pct: -4}
+  - {type: straight, length_m: 700, speed_kmh: 50, stop_s: 5}
+  - {type: arc, radius_m: 15, angle_deg: 90, speed_kmh: 30}
+  - {type: straight, length_m: 300, speed_kmh: 30}
+end: {time_limit_s: 600}
+metrics:
+  - {type: finish_time}

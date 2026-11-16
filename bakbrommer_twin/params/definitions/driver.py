@@ -13,19 +13,24 @@ def register(reg: Registry) -> None:
     reg.number("driver.max_lateral_accel", 2.0, "m/s²", 0.5, 12.0, "Cornering limit",
                "The rider slows down so corners are taken at no more than this "
                "sideways acceleration. Raise it for sporty riding.")
+    reg.number("driver.correction_margin", 30.0, "%", 0.0, 300.0, "Steering correction margin",
+               "When getting back on line the rider steers at most this much harder than "
+               "the cornering limit above.")
     reg.number("driver.max_deceleration", 3.0, "m/s²", 0.5, 10.0, "Planned braking",
                "Deceleration the rider plans with when slowing for a corner or a stop.")
     reg.number("driver.preview_time", 0.7, "s", 0.1, 3.0, "Steering preview time",
                "How far ahead (in seconds of travel) the rider aims on the route.")
     reg.number("driver.min_preview_distance", 2.5, "m", 0.5, 20.0, "Shortest preview distance",
                "The rider never aims at a point closer than this.")
-    reg.number("driver.speed_gain", 0.5, "s/m", 0.02, 5.0, "Speed control gain",
-               "Throttle (or brake) applied per m/s of speed error.")
-    reg.number("driver.speed_integral_gain", 0.15, "1/m", 0.0, 2.0, "Speed control memory",
-               "How quickly the rider adds throttle when a speed error persists.")
-    reg.number("driver.full_brake_deceleration", 6.0, "m/s²", 1.0, 12.0,
-               "Deceleration expected at full brake",
-               "Used to decide how hard to pull the lever for a planned deceleration.")
+    reg.number("driver.speed_gain", 1.2, "1/s", 0.05, 10.0, "Speed control gain",
+               "Acceleration (or braking) the rider asks for per m/s of speed error.")
+    reg.number("driver.speed_integral_gain", 0.4, "1/s", 0.0, 5.0, "Speed control memory",
+               "How quickly the rider adds throttle when a speed error persists "
+               "(per second, relative to the speed control gain).")
+    reg.number("driver.full_throttle_acceleration", 2.5, "m/s²", 0.3, 10.0,
+               "Acceleration expected at full throttle",
+               "The rider opens the throttle in proportion: wanted acceleration divided "
+               "by this value.")
     reg.number("driver.rear_brake_ratio", 0.6, "-", 0.0, 1.5, "Rear brake use",
                "Rear lever position as a share of the front lever position.")
     reg.number("driver.steer_rate_limit", 360.0, "deg/s", 30.0, 2000.0, "Fastest steering",
@@ -34,12 +39,12 @@ def register(reg: Registry) -> None:
                "The rider shifts up above this engine speed (manual gearbox).")
     reg.number("driver.downshift_speed", 3300.0, "rpm", 1000.0, 8000.0, "Downshift engine speed",
                "The rider shifts down below this engine speed (manual gearbox).")
-    reg.number("driver.lift_reaction_roll", 2.0, "deg", 0.5, 30.0,
-               "Wheel-lift reaction: roll angle",
-               "When the vehicle leans over further than this (a front wheel is in the "
-               "air), the rider starts steering out of the corner to bring it back down.")
+    reg.number("driver.lift_reaction_height", 15.0, "mm", 1.0, 300.0,
+               "Wheel-lift reaction: lift height",
+               "When a front wheel is this far off the ground the rider starts steering "
+               "out of the corner to bring it back down.")
     reg.number("driver.lift_reaction_gain", 3.0, "-", 0.0, 10.0, "Wheel-lift reaction: strength",
-               "Handlebar correction per degree of lean beyond the reaction angle. "
+               "Handlebar correction per degree of extra lean beyond the reaction height. "
                "0 = the rider does not react and the vehicle will roll over.")
     reg.number("driver.lift_reaction_damping", 0.6, "s", 0.0, 3.0,
                "Wheel-lift reaction: damping",

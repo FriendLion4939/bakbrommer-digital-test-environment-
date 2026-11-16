@@ -32,7 +32,7 @@ class Wheel:
     __slots__ = (
         "base_x", "base_y", "compression", "contact_x", "contact_y", "contact_z",
         "cos_steer", "damping", "dir_x", "dir_y", "drive_torque", "friction_capacity",
-        "friction_torque", "gap", "ground", "ground_rate", "index", "inertia", "load",
+        "friction_torque", "gap", "ground", "index", "inertia", "load",
         "omega", "radius", "sin_steer", "static_load", "steer", "stiffness", "surface",
         "tyre", "v_lat", "v_long", "x", "y", "z_foot",
     )
@@ -54,9 +54,7 @@ class Wheel:
         self.sin_steer = 0.0
         self.static_load = 0.0  # N at rest on level ground
         self.omega = 0.0  # spin speed, rad/s (+ = rolling forwards)
-        # Road under the wheel (set by the road model): height and its rate of change.
-        self.ground = 0.0  # m
-        self.ground_rate = 0.0  # m/s
+        self.ground = 0.0  # road height under the wheel (set by the road model), m
         # Contact results of this step (set by the chassis).
         self.compression = 0.0  # m of spring compression (0 when lifted)
         self.gap = 0.0  # m between tyre and road when lifted

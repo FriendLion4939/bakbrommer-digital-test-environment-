@@ -27,8 +27,12 @@ Euler angle rates:  dφ/dt = p + (q·sφ + r·cφ)·tanθ,  dθ/dt = q·cφ − 
 dψ/dt = (q·sφ + r·cφ)/cθ.
 
 Wheel contact: each wheel is a vertical spring-damper along the road normal
-that can only push: F_z = max(0, k·δ + c·dδ/dt) while the compression δ > 0.
-A wheel whose spring is fully extended carries no load — it has lifted.
+that can only push: F_z = max(0, k·δ − c·v_z) while the compression δ > 0
+(v_z = vertical speed of the body at the wheel). A wheel whose spring is
+fully extended carries no load — it has lifted. The damper acts on the body's
+motion only, not on the rate at which bumps pass underneath: there is no
+separate wheel mass in the model, and a damper fed directly with the road
+height rate would hit the body with every small bump.
 
 Integration: semi-implicit Euler (velocities from forces first, then
 positions from the new velocities).
@@ -117,13 +121,12 @@ class Chassis:
             if wheel.gap > 0.0:
                 load = 0.0
             else:
-                closing = wheel.ground_rate - vlz  # dδ/dt, m/s
-                damper = wheel.damping * closing
+                damper = -wheel.damping * vlz  # opposes the body's vertical motion
                 load = wheel.stiffness * compression + damper
                 if load < 0.0:
                     load = 0.0  # the road cannot pull the tyre down
                 else:
-                    damper_power += damper * closing
+                    damper_power -= damper * vlz
             wheel.load = load
             # Wheel heading: body x axis turned by the steering angle, projected
             # on the road plane and normalised.

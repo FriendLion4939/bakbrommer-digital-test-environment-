@@ -1,10 +1,12 @@
 """Physical plausibility of the straight-line scenarios (Phase 2)."""
 
 import pytest
-from helpers import library_run
+from helpers import SHIPPED_DATA, library_run
 
 from bakbrommer_twin.params import default_params
 from bakbrommer_twin.params.derived import derived_dict
+from bakbrommer_twin.scenarios.scenario import ScenarioStore
+from bakbrommer_twin.sim.simulator import run_scenario
 
 KMH = 3.6
 
@@ -25,10 +27,17 @@ def test_full_cargo_accelerates_slower() -> None:
 
 
 def test_top_speed_agrees_with_the_power_balance_estimate() -> None:
-    result = library_run("top_speed")
-    estimate = derived_dict(default_params())["top_speed_estimate"]
+    # The estimate assumes engine and motors both at full power, so compare it with
+    # the direct controller (Normal mode fades the electric assist out at speed).
+    params = default_params()
+    params.set("control.controller_type", "direct")
+    params.set_display("control.direct.max_torque", 115.0)
+    item = ScenarioStore(SHIPPED_DATA / "scenarios").load("top_speed")
+    result = run_scenario(params, item)
+    estimate = derived_dict(params)["top_speed_estimate"]
     assert result.metric("top_speed") == pytest.approx(estimate, rel=0.06)
     assert result.metric("steady_speed") == pytest.approx(result.metric("top_speed"), rel=0.01)
+    assert (library_run("top_speed").metric("top_speed") or 0.0) < estimate
 
 
 def test_steeper_hills_are_climbed_slower() -> None:
