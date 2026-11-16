@@ -37,7 +37,7 @@ from bakbrommer_twin.sim.road import Road
 from bakbrommer_twin.sim.safety import SafetyMonitor
 from bakbrommer_twin.sim.summary import summarise
 
-ProgressCallback = Callable[[float], None]  # called with 0…1
+ProgressCallback = Callable[[float], object]  # called with 0…1
 
 
 def _every(rate: float, time_step: float) -> int:
@@ -103,6 +103,10 @@ class Simulation:
         self.rider.mode_request = RIDE_MODES.index(initial.ride_mode)
         self.controller.reset()
         self.sensors.preset()
+        # Sensible values for the very first recorded sample (before the first control step).
+        self.sensors.fill(self.inputs)
+        self.outputs.diag_speed_estimate = self.inputs.vehicle_speed
+        self.outputs.active_mode = self.inputs.mode_request
 
     # ---- the loop -------------------------------------------------------------------
 

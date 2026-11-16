@@ -1,6 +1,6 @@
 """Entry point of the web interface: ``streamlit run bakbrommer_twin/ui/app.py``.
 
-To add a page: write ``ui/pages/<name>.py`` with a ``render()`` function, add
+To add a page: write ``ui/views/<name>.py`` with a ``render()`` function, add
 its title to the translation file under ``nav.<name>`` and list it in
 ``PAGES`` below.
 """
@@ -14,11 +14,16 @@ import streamlit as st
 from bakbrommer_twin import i18n
 from bakbrommer_twin.i18n import t
 from bakbrommer_twin.ui import state
-from bakbrommer_twin.ui.pages import parameters
+from bakbrommer_twin.ui.views import batch, home, parameters, results, run, scenarios
 
 # (url path, translation key of the title, material icon, render function)
 PAGES: tuple[tuple[str, str, str, Callable[[], None]], ...] = (
+    ("home", "nav.home", ":material/home:", home.render),
     ("parameters", "nav.parameters", ":material/tune:", parameters.render),
+    ("scenarios", "nav.scenarios", ":material/route:", scenarios.render),
+    ("run", "nav.run", ":material/play_arrow:", run.render),
+    ("results", "nav.results", ":material/monitoring:", results.render),
+    ("batch", "nav.batch", ":material/grid_view:", batch.render),
 )
 
 

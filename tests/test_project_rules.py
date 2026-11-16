@@ -11,7 +11,7 @@ from bakbrommer_twin import i18n, paths
 PACKAGE = paths.PROJECT_ROOT / "bakbrommer_twin"
 MAX_LINES = 400
 # Prefixes of translation keys that are built at run time, e.g. t(f"status.{x}").
-DYNAMIC_KEY_PREFIXES = ("status.", "param.")
+DYNAMIC_KEY_PREFIXES = ("status.", "param.", "subject.", "event.", "end.", "chart.")
 
 
 def _sources() -> list[Path]:
@@ -46,7 +46,10 @@ def test_every_module_and_public_function_has_a_docstring() -> None:
 def _translation_keys_in_code() -> set[str]:
     keys: set[str] = set()
     for path in _sources():
-        keys.update(re.findall(r"""\bt\(\s*["']([a-z0-9_.]+)["']""", path.read_text("utf-8")))
+        pattern = r"""\bt\(\s*["']([a-z0-9_.]+)["']\s*[,)]"""
+        keys.update(re.findall(pattern, path.read_text("utf-8")))
+        # keys kept in constants such as AXIS_LABELS = {"time": "result.axis_time"}
+        keys.update(re.findall(r""":\s*"((?:result|batch)\.[a-z_]+)\"""", path.read_text("utf-8")))
     # titles referenced as plain strings in ui/app.py PAGES
     keys.update(re.findall(r'"(nav\.[a-z_]+)"', (PACKAGE / "ui" / "app.py").read_text("utf-8")))
     return keys

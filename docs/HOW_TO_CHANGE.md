@@ -44,7 +44,7 @@ file to `nl.yaml` and translate the values; the language picker finds it.
 
 ## Add a UI page
 
-1. Create `ui/pages/<name>.py` with a `render()` function.
+1. Create `ui/views/<name>.py` with a `render()` function.
 2. Add `nav.<name>` to `en.yaml` and one line to `PAGES` in `ui/app.py`.
 3. Add a smoke test in `tests/test_ui_smoke.py` using `_page("<name>")`.
 
@@ -118,3 +118,20 @@ exported and selectable in the charts.
 
 Append a `_Check(...)` in `SafetyMonitor.__init__` (`sim/safety.py`) and add
 the text `event.<kind>` to `translations/en.yaml`.
+
+## Add a chart
+
+1. `reports/chart_defs.py`: append `ChartDef("my_chart", ("channel_a", "channel_b"))`
+   to `CHARTS`. All channels must have the same unit (a test checks it); at
+   most four per chart.
+2. `translations/en.yaml`: add the title under `chart.my_chart`.
+3. To show it by default or in reports, add the key to `DEFAULT_CHARTS` /
+   `REPORT_CHARTS`.
+Any recorded channel can also be charted ad hoc in the UI ("Add any recorded
+signal") without code changes.
+
+## Add a safety limit for sweeps and the optimiser
+
+Add a field to `SafetyConstraints` (`batch/constraints.py`), handle it in
+`violations()` and `severity()`, add an input in `ui/batch_common.py`
+(`pick_limits`) and a test in `tests/test_batch.py`.

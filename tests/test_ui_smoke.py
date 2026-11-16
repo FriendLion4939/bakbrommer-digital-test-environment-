@@ -27,8 +27,8 @@ def _isolated_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def _page(module: str) -> AppTest:
-    """Run one page module (``bakbrommer_twin.ui.pages.<module>``) by itself."""
-    script = f"from bakbrommer_twin.ui.pages import {module}\n{module}.render()\n"
+    """Run one page module (``bakbrommer_twin.ui.views.<module>``) by itself."""
+    script = f"from bakbrommer_twin.ui.views import {module}\n{module}.render()\n"
     app = AppTest.from_string(script, default_timeout=120).run()
     assert not app.exception, [e.value for e in app.exception]
     return app
@@ -68,3 +68,57 @@ def test_switching_profile_updates_calculated_values() -> None:
     assert not app.exception
     tables = [str(d.value) for d in app.dataframe]
     assert any("307" in table for table in tables), "total mass of the full-cargo profile"
+
+
+def test_home_page() -> None:
+    app = _page("home")
+    assert app.title[0].value == "Bakbrommer Twin"
+    assert any(m.label == "Scenarios" and int(m.value) >= 17 for m in app.metric)
+
+
+def test_run_page_runs_a_scenario_and_shows_the_result() -> None:
+    app = _page("run")
+    next(s for s in app.selectbox if s.label == "Scenario").select("slalom").run()
+    next(b for b in app.button if b.label == "Run").click().run()
+    assert not app.exception, [e.value for e in app.exception]
+    assert any(h.value.startswith("Slalom") for h in app.header)
+    assert any("Safety report (1 events)" in s.value for s in app.subheader)
+    assert any("NOT VALIDATED" in w.value for w in app.warning)
+    assert len(list(paths.runs_dir().iterdir())) == 1  # saved automatically
+    labels = {m.label for m in app.metric}
+    assert {"Time to finish", "Top speed reached"} <= labels
+
+
+def test_results_page_lists_saved_runs() -> None:
+    app = _page("results")
+    assert any("No saved runs yet" in i.value for i in app.info)
+    from helpers import library_run  # a finished run to save
+
+    library_run("slalom").save(paths.runs_dir())
+    library_run("roundabout").save(paths.runs_dir())
+    app = _page("results")
+    table = app.dataframe[0].value
+    assert len(table) == 2 and set(table["Scenario"]) == {"Slalom", "Roundabout"}
+
+
+def test_scenarios_page_previews_and_saves() -> None:
+    app = _page("scenarios")
+    assert not app.error, [e.value for e in app.error]
+    assert any("Route length" in c.value for c in app.caption)
+    next(s for s in app.selectbox if s.label == "Scenario").select("__new__").run()
+    assert not app.exception and not app.error
+    next(i for i in app.text_input if i.label.startswith("File name")).set_value("my_ride").run()
+    next(b for b in app.button if b.label == "Save scenario").click().run()
+    assert not app.exception, [e.value for e in app.exception]
+    assert (paths.scenarios_dir() / "my_ride.yaml").exists()
+
+
+def test_batch_page_renders_and_runs_a_small_sweep() -> None:
+    app = _page("batch")
+    assert not app.exception
+    next(s for s in app.selectbox if s.key == "sweep_scenario").select("accel_0_50").run()
+    next(n for n in app.number_input if n.key == "sweep_a_count").set_value(2).run()
+    next(b for b in app.button if b.key == "sweep_run").click().run()
+    assert not app.exception, [e.value for e in app.exception]
+    assert not app.error, [e.value for e in app.error]
+    assert any(s.key == "sweep_metric" for s in app.selectbox)

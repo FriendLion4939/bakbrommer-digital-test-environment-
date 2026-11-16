@@ -71,11 +71,11 @@ def _stability_values(p: ParamSet) -> list[DerivedValue]:
     group = "Stability"
     return [
         DerivedValue("lift_accel_left_turn", "Wheel-lift cornering limit, left turn",
-                     mass.lift_threshold_accel(p, turn_left=True), "g0",
+                     mass.lift_threshold_accel(p, turn_left=True), "g",
                      "Steady sideways acceleration at which the inner (left) front wheel "
                      "lifts. Rigid-vehicle estimate; the simulation is more exact.", group),
         DerivedValue("lift_accel_right_turn", "Wheel-lift cornering limit, right turn",
-                     mass.lift_threshold_accel(p, turn_left=False), "g0",
+                     mass.lift_threshold_accel(p, turn_left=False), "g",
                      "Steady sideways acceleration at which the inner (right) front wheel "
                      "lifts.", group),
         DerivedValue("tip_over_angle", "Tip-over roll angle", mass.tip_over_angle(p), "deg",

@@ -7,6 +7,7 @@ from numpy.typing import NDArray
 
 from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.physics.battery import Battery
+from bakbrommer_twin.physics.energy import EnergyLedger
 from bakbrommer_twin.sim.result import Metric
 from bakbrommer_twin.sim.safety import SafetyEvent
 
@@ -78,7 +79,7 @@ def summarise(data: Data, events: list[SafetyEvent], energy: dict[str, float],
         Metric(key="max_deceleration", label="Strongest braking",
                value=float(-np.min(data["accel_x"])), unit="m/s²"),
         Metric(key="max_lateral_accel", label="Strongest cornering",
-               value=float(np.max(np.abs(data["accel_y"]))), unit="g0"),
+               value=float(np.max(np.abs(data["accel_y"]))), unit="g"),
         Metric(key="max_roll", label="Largest roll angle",
                value=float(np.max(np.abs(data["roll"]))), unit="deg"),
         Metric(key="min_rollover_margin", label="Smallest rollover margin",
@@ -98,3 +99,14 @@ def summarise(data: Data, events: list[SafetyEvent], energy: dict[str, float],
         Metric(key="energy_balance_error", label="Energy bookkeeping error",
                value=abs(energy_error) / work if work > 0.0 else 0.0, unit="%"),
     ]
+
+
+def summary_labels(params: ParamSet) -> dict[str, str]:
+    """Key → label of every summary metric (for metric pickers), without running anything."""
+    blank = {name: np.zeros(2) for name in (
+        "time", "speed", "fuel_used", "battery_soc", "battery_current", "battery_voltage",
+        "motor_temp_l", "motor_temp_r", "accel_x", "accel_y", "roll", "rollover_margin",
+        "gap_fl", "gap_fr", "gap_r")}
+    blank["time"] = np.array([0.0, 1.0])
+    energy = {name: 0.0 for name in EnergyLedger().as_dict()}
+    return {m.key: m.label for m in summarise(blank, [], energy, 0.0, params)}

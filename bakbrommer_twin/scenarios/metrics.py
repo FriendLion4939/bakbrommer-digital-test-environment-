@@ -104,7 +104,7 @@ def _wheel_lift_accel(data: Data, events: list[SafetyEvent], spec: MetricSpec) -
     if start is not None:
         value = float(np.interp(start, data["time"], np.abs(data["accel_y"])))
     return Metric(key="wheel_lift_lateral_accel", label="Cornering force at first wheel lift",
-                  value=value, unit="g0")
+                  value=value, unit="g")
 
 
 def _finish_time(data: Data, events: list[SafetyEvent], spec: MetricSpec) -> Metric:
@@ -139,3 +139,10 @@ def evaluate(specs: list[MetricSpec], data: Data, events: list[SafetyEvent]) -> 
             raise ValueError(f"unknown metric type '{spec.type}'; choose from {METRIC_TYPES}")
         results.append(_METRICS[spec.type](data, events, spec))
     return results
+
+
+def expected_keys(specs: list[MetricSpec]) -> list[tuple[str, str]]:
+    """(key, label) of the metrics a list of specs will produce, without running anything."""
+    blank = {name: np.zeros(2) for name in ("time", "speed", "brake_front", "brake_rear",
+                                            "accel_y", "route_offset")}
+    return [(metric.key, metric.label) for metric in evaluate(specs, blank, [])]

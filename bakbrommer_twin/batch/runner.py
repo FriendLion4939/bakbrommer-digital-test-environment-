@@ -20,7 +20,7 @@ from bakbrommer_twin.params.types import ParamValue
 from bakbrommer_twin.scenarios.scenario import Scenario
 from bakbrommer_twin.sim.simulator import run_scenario
 
-ProgressCallback = Callable[[int, int], None]  # (finished, total)
+ProgressCallback = Callable[[int, int], object]  # (finished, total)
 ParamDict = dict[str, ParamValue]
 
 
@@ -58,7 +58,7 @@ def run_job(base: ParamDict, scenario: dict[str, object], job: Job) -> JobResult
         result = run_scenario(params, Scenario.model_validate(scenario))
     except (ValueError, ArithmeticError) as exc:  # invalid combination of parameters
         return JobResult(job.label, job.overrides, "error", {}, {}, {}, {}, error=str(exc))
-    found = (*result.meta.summary, *result.meta.metrics)
+    found = (*result.meta.metrics, *result.meta.summary)  # scenario results first
     metrics = {m.key: m.value for m in found}
     counts: dict[str, int] = {}
     for event in result.meta.events:

@@ -6,7 +6,12 @@ app:
     NOT VALIDATED — this profile has not been calibrated against real ride
     data yet. Treat all results as estimates.
 nav:
+  home: Start
   parameters: Parameters
+  scenarios: Scenarios
+  run: Run a simulation
+  results: Results and comparison
+  batch: Sweeps and optimiser
 status:
   measured: measured
   estimated: estimated
@@ -60,3 +65,269 @@ params:
   history_restore: Restore this version
   history_restored: Version restored (not saved yet — press Save to keep it).
   current_working: (current, with unsaved changes)
+subject:
+  fl: front-left wheel
+  fr: front-right wheel
+  r: rear wheel
+  left: left motor
+  right: right motor
+event:
+  wheel_lift: Wheel lifted off the ground
+  wheel_spin: Wheel spin
+  wheel_lock: Wheel locked
+  side_slide: Sliding sideways
+  motor_derating: Motor hot - power reduced
+  motor_overheat: Motor overheated
+  battery_overcurrent: Battery current above the BMS limit
+  battery_overcharge: Charging current above the BMS limit
+  bms_trip: BMS cut the power
+  battery_undervoltage: Battery voltage too low
+  battery_overheat: Battery overheated
+  past_tip_over_point: Leaning beyond the tip-over angle
+  rollover: ROLLED OVER
+end:
+  route_end: end of the route reached
+  time_limit: time limit reached
+  speed_reached: target speed reached
+  stopped: vehicle stopped
+  wheel_lift: stopped at the first wheel lift
+  rollover: vehicle rolled over
+chart:
+  speed: Speed
+  pedals: Throttle and brakes
+  steering: Handlebar angle
+  acceleration: Felt acceleration
+  wheel_loads: Wheel loads
+  wheel_lift: Wheel lift height
+  roll_pitch: Roll and pitch angle
+  rollover_margin: Rollover margin (1 = safe, 0 = wheel lifts)
+  slip_ratio: Wheel slip (drive + / brake -)
+  slip_angle: Slip angles
+  wheel_torque: Drive torque at the wheels
+  wheel_speed: Wheel rim speeds
+  battery_current: Battery and motor currents
+  battery_voltage: Battery voltage
+  battery_soc: Battery state of charge
+  temperatures: Temperatures
+  engine_speed: Engine speed
+  gear: Gear
+  interventions: Controller interventions
+  torque_commands: Motor torque commands
+  ride_mode: Active ride mode
+  route_offset: Distance from the route
+  route_planned: Planned route
+  lift_marker: Wheel lift / rollover
+anim:
+  load: Load
+  lift: Lift
+  slip: Slip
+  torque: Torque
+  lift_label: LIFT
+  slip_label: SLIP
+  load_key: Wheel load [N]
+  play: Play
+  pause: Pause
+table:
+  quantity: Quantity
+  value: Value
+  unit: Unit
+  start: Start [s]
+  end: End [s]
+  duration: Duration [s]
+  event: Event
+  where: Where
+  peak: Worst value
+  parameter: Parameter
+report:
+  scenario: Scenario
+  profile: Vehicle profile
+  controller: Controller
+  created: Simulated on
+  ended: Ended
+  time_step: time step
+  scenario_results: Scenario results
+  safety: Safety report
+  no_events: No safety events.
+  summary: Summary
+  route: Route
+  charts: Charts
+home:
+  intro: >-
+    A driving simulator for the hybrid cargo moped. Describe the vehicle with
+    parameters, pick a ride, press run, and see speed, wheel loads, wheel lift,
+    battery current and everything else - before trying it on the road.
+  profile: Vehicle profile in use
+  scenarios: Scenarios
+  saved_runs: Saved runs
+  to_measure: Values still to measure
+  steps_title: How to use it
+  steps: |
+    1. **Parameters** - check the vehicle profile. Start with masses, positions and heights; they decide wheel lift.
+    2. **Scenarios** - look at the built-in rides or make your own.
+    3. **Run a simulation** - pick a scenario and press *Run*. Every run is saved.
+    4. **Results and comparison** - open saved runs, tick two or more to compare them.
+    5. **Sweeps and optimiser** - try many values at once, or let the program search controller settings.
+  measure_title: What to measure first
+  measure: |
+    * Total weight and the weight on each wheel (three bathroom scales) - gives the centre of gravity position.
+    * Height of the centre of gravity (weigh the rear wheel with the front raised).
+    * Track width, wheelbase, wheel radii.
+    * BMS and motor controller current limits as actually set.
+run:
+  title: Run a simulation
+  intro: Pick a scenario. It is driven with the vehicle profile selected on the Parameters page.
+  scenario: Scenario
+  profile: Vehicle profile
+  profile_help: Change or edit the profile on the Parameters page. Unsaved changes are used too.
+  suggested_profile: "This scenario is meant for the profile '{profile}'. You can select it on the Parameters page."
+  name: Name of this run
+  start: Run
+  running: Simulating...
+  failed: "The simulation could not run: {error}"
+  saved: "Saved as {folder}"
+result:
+  safety_title: "Safety report ({count} events)"
+  rolled_over: The vehicle rolled over in this run.
+  charts_pick: Charts
+  channels_pick: Add any recorded signal
+  x_axis: Horizontal axis
+  axis_time: time
+  axis_distance: distance
+  no_charts: Pick at least one chart.
+  tab_charts: Charts
+  tab_animation: Animation
+  tab_route: Route
+  tab_numbers: All numbers
+  tab_export: Export
+  animation_help: >-
+    Top view. Wheel colour = load (dark = heavy). Red hollow wheel = lifted.
+    Orange outline = slipping. Arrows = tyre force on the vehicle.
+  follow: Camera follows the vehicle
+  show_animation: Show the animation
+  export_intro: Download the signals as CSV, or a report to print or keep.
+  export_csv: Download CSV
+  prepare_html: Prepare HTML report
+  download_html: Download HTML report
+  prepare_pdf: Prepare PDF report
+  download_pdf: Download PDF report
+results:
+  title: Results and comparison
+  intro: Tick one run to open it, or several to compare them.
+  none: No saved runs yet. Run a simulation first.
+  pick_hint: Tick the box in front of a run.
+  col_name: Run
+  col_scenario: Scenario
+  col_profile: Profile
+  col_when: Simulated on
+  col_end: Ended
+  col_events: Safety events
+  delete: "Delete {count} run(s)"
+  delete_confirm: Yes, delete
+  too_many: "Only the first {limit} ticked runs are compared."
+  compare_title: "Comparing {count} runs"
+  compare_help: Differences are relative to run 1. Rows that differ by more than 5 % are highlighted.
+  only_changed: Show only rows that differ
+  param_differences: "Parameters that differ between the runs ({count})"
+scenarios:
+  title: Scenarios
+  intro: A scenario is a route with speeds, surfaces and gradients, plus what to measure. Pick one to look at or change it, or start a new one.
+  pick: Scenario
+  new: "+ New scenario"
+  new_name: New scenario
+  name: Name
+  category: Category
+  description: Description
+  initial_speed: Speed at the start [km/h]
+  initial_mode: Ride mode at the start
+  engine_running: Petrol engine running at the start
+  suggested_profile: Suggested vehicle profile
+  time_limit: Stop after [s]
+  end_speed: Stop on reaching [km/h]
+  zero_is_off: 0 = not used
+  end_stopped: Stop when the vehicle stands still
+  end_lift: Stop at the first wheel lift
+  segments: Route segments
+  segments_help: >-
+    One row per piece of road, in driving order. straight needs length_m; arc
+    needs radius_m and angle_deg (+ left, - right); slalom needs
+    cone_spacing_m, cones, lateral_offset_m; lane_change needs length_m and
+    lateral_offset_m; waypoints needs points. throttle/brake (0-1) fix the
+    pedals instead of holding a speed. stop_s makes the rider halt at the start
+    of that segment.
+  points_help: "Waypoints as 'forward, left; forward, left; ...' in metres from the segment start."
+  events: Ride mode changes during the run
+  events_help: Give either a time or a distance for each change.
+  metrics: Results to calculate
+  metrics_help: time_to_speed needs speed_kmh (and optionally from_kmh).
+  overrides: Parameter changes for this scenario only
+  overrides_help: "Parameter name (as shown in the help of each parameter) and value in its usual unit."
+  draw_title: Draw a route by clicking
+  draw_help: >-
+    Click grid points in driving order. The route starts at 'Start' heading
+    to the right. 'Use this drawing' replaces the segment table by one smooth
+    curve through your points.
+  draw_size: Canvas length [m]
+  draw_spacing: Grid spacing [m]
+  draw_undo: Undo last point
+  draw_clear: Clear
+  draw_use: Use this drawing as the route
+  draw_forward: forward [m]
+  draw_left: left [m]
+  start: Start
+  stop: Stop
+  preview_route: Route from above (colour = surface)
+  preview_speed: Speed
+  preview_gradient: Gradient
+  speed_limit: Requested speed
+  speed_plan: Rider's plan
+  route_length: "Route length {length:.0f} m"
+  invalid: "This scenario is not complete yet: {error}"
+  file_name: File name (lower-case letters, digits, _)
+  save: Save scenario
+  saved: Scenario saved.
+  delete: Delete
+  delete_confirm: Yes, delete this scenario
+batch:
+  title: Sweeps and optimiser
+  intro: Run a scenario many times. All tools use the vehicle profile selected on the Parameters page.
+  tab_sweep: Parameter sweep
+  tab_monte: Monte Carlo
+  tab_optimiser: Optimiser
+  sweep_help: Vary one or two parameters in steps and see how a result changes.
+  monte_help: Vary parameters at random (e.g. load, grip) and see how much the result scatters and how often a safety limit is broken.
+  optimiser_help: Let the program search parameter values (usually controller settings) for the best result that stays within the safety limits.
+  first_param: Parameter to vary
+  second_param: Second parameter
+  use_second: Vary a second parameter too
+  from: From
+  to: To
+  steps: Steps
+  run_count: "Run {count} simulations"
+  metric: Result to show
+  limits_title: Safety limits and computing power
+  limits_help: A run that breaks one of these limits counts as unsafe.
+  max_lift_events: Wheel lifts allowed
+  max_lift_height: Highest wheel lift allowed [mm]
+  max_current: Battery current limit [A]
+  min_margin: Smallest rollover margin
+  workers: Simulations at the same time
+  workers_help: More is faster but uses more processor cores.
+  unsafe: unsafe
+  safe: safe
+  samples: Samples
+  sample_count: Number of samples
+  seed: Random seed
+  unsafe_share: Share of unsafe samples
+  statistics: Statistics of all results
+  goal: Goal
+  direction: Direction
+  minimise: as low as possible
+  maximise: as high as possible
+  population: Candidates per parameter and round
+  generations: Rounds
+  best_so_far: Best safe value so far
+  run_number: Simulation number
+  nothing_safe: No candidate stayed within the safety limits. The least unsafe one broke -
+  best_found: "Best safe settings after {runs} simulations:"
+  apply: Use these values in the working profile
+  applied: Values applied (not saved yet - save on the Parameters page).

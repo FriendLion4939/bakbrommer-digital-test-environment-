@@ -185,3 +185,40 @@ One status note per phase, newest at the bottom.
   (`control.engine_auto_start_stop`)
 * Do the Fardrivers accept a torque command over CAN, and how fast do they
   follow it? (`motor.torque_response_time`)
+
+## Phase 5 — web interface, batch tools, reports ✅
+
+**Done**
+* Web interface with six pages: Start, Parameters, Scenarios (library,
+  editor with segment table, live route/speed-plan preview, click-to-draw
+  routes), Run a simulation, Results and comparison, Sweeps and optimiser.
+* Results view: headline numbers, safety report, stacked charts on one
+  shared time or distance axis (zoom one, all follow), any recorded signal
+  can be added, top-down 2D animation (wheel colour = load, red hollow wheel
+  = lifted, orange outline = slipping, arrows = tyre forces), route map,
+  export to CSV / printable HTML / PDF.
+* Run comparison: tick two to four saved runs → metric table with
+  differences (rows that differ by more than 5 % highlighted), differing
+  parameters, overlaid charts (colour = signal, line style = run).
+* Batch tools (parallel worker processes): one- and two-parameter sweeps,
+  Monte Carlo with statistics and share of unsafe samples, optimiser
+  (differential evolution) under hard safety constraints with an "apply to
+  profile" button.
+* All texts in `translations/en.yaml`; parameter forms generated from the
+  registry.
+
+**Checked**
+* 299 tests pass, including a smoke test per page and tests for charts,
+  tables, exports, sweeps, Monte Carlo and the optimiser.
+* Every page opened in a real browser (Chromium): edit a parameter, run a
+  scenario, view charts, compare runs, run a sweep with parallel workers.
+  This found and fixed one bug the headless tests cannot see (a folder named
+  `pages` made Streamlit bypass the navigation; it is now `views`).
+* The optimiser test recovers a known optimum: the largest motor torque that
+  keeps the battery current under a given limit.
+
+**Limits**
+* The animation shows at most 240 frames per run (long runs are thinned).
+* The comparison overlays at most four runs.
+* The PDF report has static charts; the HTML report is interactive and can
+  be printed from the browser.

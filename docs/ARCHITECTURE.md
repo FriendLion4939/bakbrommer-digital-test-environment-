@@ -7,7 +7,8 @@ in `docs/HOW_TO_CHANGE.md`.
 ## Layers (who may import whom)
 
 ```
-ui ─► reports ─► batch / calibration / data_import ─► sim ─► scenarios ─► control, sensors ─► physics ─► params
+ui ─► reports ─► batch ─► sim ─► scenarios ─► control, sensors ─► physics ─► params
+(i18n — the translation helper — may be used by reports and ui)
 ```
 
 A package may import packages to its right, never to its left. `physics`
@@ -78,10 +79,47 @@ knows nothing about scenarios, controllers or the UI.
 | `summary.py` | Summary numbers for every run. |
 | `result.py` | `RunResult`, `RunMeta`: results in memory and on disk. |
 
+### `bakbrommer_twin/batch/` — many runs
+| File | What it does |
+|---|---|
+| `runner.py` | `Job`, `JobResult`, `run_jobs()`: runs jobs in parallel worker processes. |
+| `constraints.py` | `SafetyConstraints`: what counts as an unsafe run. |
+| `sweep.py` | One- or two-parameter sweeps. |
+| `montecarlo.py` | Random variation of parameters; statistics. |
+| `optimiser.py` | Differential-evolution search with hard safety constraints. |
+| `tables.py` | Results of many runs as a table. |
+
+### `bakbrommer_twin/reports/` — charts, tables, exports
+| File | What it does |
+|---|---|
+| `style.py` | Colours and sizes used by every chart. |
+| `chart_defs.py` | **The list of standard charts** (`CHARTS`). |
+| `figures.py` | Synchronised time-series charts, route map. |
+| `animation.py` | Top-down 2D animation with wheel loads, lift, slip and force arrows. |
+| `scenario_figures.py` | Route preview and drawing canvas of the scenario editor. |
+| `batch_figures.py` | Sweep line/heat map, histogram, optimiser history. |
+| `tables.py` | Metric, safety-event and run-comparison tables. |
+| `export.py` | CSV, printable HTML report, PDF report. |
+
+### `bakbrommer_twin/ui/` — web interface (Streamlit)
+| File | What it does |
+|---|---|
+| `app.py` | Entry point; the list of pages (`PAGES`). |
+| `state.py` | Everything kept in the browser session (working profile, current result). |
+| `param_form.py` | Parameter widgets generated from the registry. |
+| `result_view.py` | Shows one run (used by Run and Results). |
+| `scenario_form.py` | Scenario ↔ editable tables. |
+| `batch_common.py` | Controls shared by the batch tools. |
+| `views/home.py`, `parameters.py`, `scenarios.py`, `run.py`, `results.py`, `batch.py` | One file per page, each with `render()`. |
+
+Charts follow a few fixed rules (see `reports/style.py`): one y-axis per
+chart and one unit per chart; a signal keeps its colour, runs differ by line
+style; red/orange are reserved for warnings and always come with a label.
+
 ### Other
 | Path | What it does |
 |---|---|
-| `bakbrommer_twin/ui/` | Streamlit web interface (`app.py`, `pages/`, `i18n.py`, `translations/`). |
+| `bakbrommer_twin/i18n.py`, `translations/en.yaml` | All interface and report texts. |
 | `bakbrommer_twin/paths.py` | Where data and results are stored. |
 | `bakbrommer_twin/cli.py` | Command line (`ui`, `params`, `derived`, `scenarios`, `run`). |
 | `data/profiles/`, `data/scenarios/` | Vehicle profiles and the scenario library (YAML). |
@@ -138,5 +176,10 @@ data/profiles/*.yaml ── ProfileStore.load ─┘ (base profile first, then o
 | change the simulated rider | `scenarios/driver.py` |
 | add a controller | `control/` + `control/factory.py` |
 | add a calculated value to the UI | `params/derived.py` |
+| add or change a standard chart | `reports/chart_defs.py` |
+| change how charts look | `reports/style.py`, `reports/figures.py` |
+| change the animation | `reports/animation.py` |
+| change a report | `reports/export.py` |
+| add a safety limit for sweeps/optimiser | `batch/constraints.py` |
 | change a UI text | `translations/en.yaml` |
-| add a UI page | `ui/pages/` + `PAGES` in `ui/app.py` |
+| add a UI page | `ui/views/` + `PAGES` in `ui/app.py` |

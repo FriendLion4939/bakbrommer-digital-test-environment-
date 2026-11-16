@@ -26,7 +26,6 @@ UNITS: dict[str, tuple[str, float, float]] = {
     "km": ("m", 1e3, 0.0),
     # mass
     "kg": ("kg", 1.0, 0.0),
-    "g": ("kg", 1e-3, 0.0),
     # time and rate
     "s": ("s", 1.0, 0.0),
     "ms": ("s", 1e-3, 0.0),
@@ -48,7 +47,7 @@ UNITS: dict[str, tuple[str, float, float]] = {
     "deg/s": ("rad/s", math.pi / 180.0, 0.0),
     # acceleration
     "m/s²": ("m/s²", 1.0, 0.0),
-    "g0": ("m/s²", 9.80665, 0.0),
+    "g": ("m/s²", 9.80665, 0.0),  # acceleration in multiples of gravity
     "rad/s²": ("rad/s²", 1.0, 0.0),
     # force, torque, stiffness, damping
     "N": ("N", 1.0, 0.0),

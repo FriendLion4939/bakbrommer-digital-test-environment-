@@ -20,13 +20,13 @@ from pydantic import BaseModel, Field
 from scipy.optimize import differential_evolution
 
 from bakbrommer_twin.batch.constraints import SafetyConstraints
-from bakbrommer_twin.batch.runner import Job, JobResult, run_jobs
+from bakbrommer_twin.batch.runner import Job, JobResult, ParamDict, run_jobs
 from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.params.types import Kind
 from bakbrommer_twin.scenarios.scenario import Scenario
 
 _UNSAFE_SCORE = 1e9  # added to every unsafe candidate so it ranks below all safe ones
-OptimiserProgress = Callable[[int, float | None], None]  # (runs so far, best safe value)
+OptimiserProgress = Callable[[int, float | None], object]  # (runs so far, best safe value)
 
 
 class SearchParam(BaseModel):
@@ -104,10 +104,11 @@ def optimise(params: ParamSet, scenario: Scenario, search: list[SearchParam], go
 
     def evaluate(_: object, candidates: Iterable[np.ndarray]) -> list[float]:
         """Run one generation of candidates (in parallel) and score them."""
-        jobs = []
+        jobs: list[Job] = []
         for vector in candidates:
-            overrides = {item.param: (round(float(x)) if whole else float(f"{float(x):.6g}"))
-                         for item, x, whole in zip(search, vector, integer, strict=True)}
+            overrides: ParamDict = {
+                item.param: (round(float(x)) if whole else float(f"{float(x):.6g}"))
+                for item, x, whole in zip(search, vector, integer, strict=True)}
             jobs.append(Job(f"candidate {len(history) + len(jobs) + 1}", overrides))
         results = run_jobs(params, scenario, jobs, workers)
         scores = [score(result) for result in results]
@@ -116,7 +117,9 @@ def optimise(params: ParamSet, scenario: Scenario, search: list[SearchParam], go
             progress(len(history), None if best is None else sign * best[0])
         return scores
 
-    differential_evolution(
+    # SciPy calls ``workers(func, candidates)`` once per generation; ``evaluate`` runs
+    # the simulations itself, so the objective function passed here is never called.
+    differential_evolution(  # type: ignore[call-overload]
         lambda _: 0.0, bounds=[(item.low, item.high) for item in search],
         maxiter=config.generations, popsize=config.population, seed=config.seed,
         polish=False, tol=0.0, atol=0.0, updating="deferred", workers=evaluate)

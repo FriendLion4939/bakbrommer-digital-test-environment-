@@ -159,7 +159,7 @@ def test_standalone_electric_keeps_the_engine_off_and_hybrid_brings_it_back() ->
     assert running[distance < 115.0].max() == 0.0
     assert result["engine_speed"][distance < 115.0].max() == 0.0
     assert running[-1] == 1.0
-    assert result["ctl_mode"][5] == RIDE_MODES.index("standalone_electric")
+    assert result["ctl_mode"][0] == RIDE_MODES.index("standalone_electric")
     assert result["ctl_mode"][-1] == RIDE_MODES.index("normal")
     assert result["speed"][-1] > result["speed"][np.searchsorted(distance, 115.0)]
 
