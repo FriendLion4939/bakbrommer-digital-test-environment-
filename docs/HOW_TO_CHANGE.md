@@ -135,3 +135,39 @@ signal") without code changes.
 Add a field to `SafetyConstraints` (`batch/constraints.py`), handle it in
 `violations()` and `severity()`, add an input in `ui/batch_common.py`
 (`pick_limits`) and a test in `tests/test_batch.py`.
+
+## Add a new log format
+
+A reader turns a file into a `RawLog` (channel name → time stamps and SI
+values); everything after that (cleaning, replay, calibration) is shared.
+
+1. Write `data_import/<format>_log.py` with a function
+   `read(text, ...) -> RawLog`. Use the channel names from
+   `data_import/channels.py`; convert to SI with `params/units.py`.
+2. Call it from `ui/views/import_replay.py` (`render`, where the format is
+   detected) — for a table-like format reuse the mapping wizard by producing a
+   `pandas.DataFrame` and calling `csv_log.apply_mapping`.
+3. Add a small example file to `data/example_logs/` (extend
+   `scripts/make_example_logs.py` so it stays reproducible and labelled as
+   synthetic) and a test in `tests/test_data_import.py`.
+
+## Add a log channel (something new that is logged)
+
+Usually it is a sensor: follow "Add a sensor" — log channels are built from
+the sensor list automatically. Add its plausible range to `_RANGES` in
+`data_import/channels.py` and name hints to `_HINTS` in
+`data_import/mapping.py`.
+
+## Change the CAN layout
+
+Edit the YAML file in `data/can/` (UI: Import page → "View or edit this
+definition file"). No code change. If you change the *example* layout, rerun
+`python scripts/make_example_logs.py`.
+
+## Change the controller interface (inputs/outputs)
+
+1. Edit `ControllerInputs` / `ControllerOutputs` in `control/interface.py`.
+2. Fill new inputs in `sensors/suite.py` (`fill`); use new outputs in
+   `sim/simulator.py` (`run`, where commands are copied).
+3. Regenerate the C header: `python -m bakbrommer_twin.control.sil.header`
+   and set the new output in `control/sil/example_controller.c`.

@@ -122,3 +122,51 @@ def test_batch_page_renders_and_runs_a_small_sweep() -> None:
     assert not app.exception, [e.value for e in app.exception]
     assert not app.error, [e.value for e in app.error]
     assert any(s.key == "sweep_metric" for s in app.selectbox)
+
+
+def test_import_page_reads_example_csv_and_replays() -> None:
+    app = _page("import_replay")
+    assert any("Choose a file" in i.value for i in app.info)
+    next(s for s in app.selectbox if s.label.startswith("... or try")).select(
+        "example_ride_sd.csv").run()
+    assert not app.exception, [e.value for e in app.exception]
+    assert not app.error, [e.value for e in app.error]
+    assert any("Recording length" in c.value for c in app.caption)
+    quality = next(d.value for d in app.dataframe if "Usable [%]" in d.value.columns)
+    assert len(quality) == 20 and quality["Impossible values removed"].sum() == 1
+    next(b for b in app.button if b.label == "Replay this ride").click().run()
+    assert not app.exception, [e.value for e in app.exception]
+    fit = next(d.value for d in app.dataframe if "r_squared" in d.value.columns)
+    speed = fit[fit["channel"] == "Vehicle speed"].iloc[0]
+    assert speed["r_squared"] > 0.8
+    assert any("synthetic example" in i.value for i in app.info)
+
+
+def test_import_page_decodes_can_logs() -> None:
+    app = _page("import_replay")
+    next(s for s in app.selectbox if s.label.startswith("... or try")).select(
+        "example_ride_can.log").run()
+    assert not app.exception and not app.error, [e.value for e in app.error]
+    assert any("frames read" in c.value and "20 channels" in c.value for c in app.caption)
+    quality = next(d.value for d in app.dataframe if "Gaps" in d.value.columns)
+    assert quality["Gaps"].sum() == 2  # the hole in the battery message (voltage + current)
+
+
+def test_calibration_page_fits_and_accepts() -> None:
+    from test_replay_calibration import _short  # a short piece of the example recording
+
+    _short(12.0).save(paths.recordings_dir(), "short_example")
+    app = _page("calibration")
+    assert not app.exception
+    picks = {m.label: m for m in app.multiselect}
+    picks["Parameters to fit"].set_value(["battery.internal_resistance"])
+    picks["Measured channels to match"].set_value(["battery_voltage"])
+    app.run()
+    next(s for s in app.slider if s.label == "Simulation budget").set_value(6).run()
+    next(b for b in app.button if b.label == "Calibrate").click().run()
+    assert not app.exception, [e.value for e in app.exception]
+    assert not app.error, [e.value for e in app.error]
+    values = next(d.value for d in app.dataframe if "Fitted" in d.value.columns)
+    assert values["Before"].iloc[0] == 60.0 and values["Fitted"].iloc[0] > 62.0
+    next(b for b in app.button if b.label.startswith("Accept")).click().run()
+    assert any("accepted" in s.value for s in app.success)

@@ -27,6 +27,7 @@ from bakbrommer_twin.params.definitions.wheels import SURFACE_NAMES
 from bakbrommer_twin.params.types import ParamValue
 
 SegmentType = Literal["straight", "arc", "slalom", "lane_change", "waypoints"]
+REPLAY_CATEGORY = "replay"  # category of the scenario stored with a replayed log
 _KEY_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_\-]*$")
 
 

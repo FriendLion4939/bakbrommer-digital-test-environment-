@@ -140,6 +140,13 @@ class Route:
             self.surface_left.append(segment.surface_left or surface)
             self.surface_right.append(segment.surface_right or surface)
 
+    @classmethod
+    def open_area(cls, surface: str, spacing: float) -> Route:
+        """A route without a path: level ground of one surface (used for log replay)."""
+        route = cls([Segment(type="straight", length_m=2.0 * spacing)], spacing, surface)
+        route.has_path = False
+        return route
+
     def __len__(self) -> int:
         return len(self.s)
 

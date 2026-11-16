@@ -9,7 +9,7 @@ from bakbrommer_twin.params.registry import Registry
 RIDE_MODES: tuple[str, ...] = ("normal", "eco", "sport", "standalone_electric")
 
 # Available controller implementations (see control/factory.py).
-CONTROLLER_TYPES: tuple[str, ...] = ("reference", "direct")
+CONTROLLER_TYPES: tuple[str, ...] = ("reference", "direct", "sil")
 
 
 def register(reg: Registry) -> None:
@@ -19,7 +19,9 @@ def register(reg: Registry) -> None:
                "reference: the hybrid logic of the STM32G4 in readable Python (ride modes, "
                "blending, traction control, torque vectoring, regen, limits). "
                "direct: throttle goes straight to both motors, no hybrid logic "
-               "(for testing the physics).")
+               "(for testing the physics). "
+               "sil: controller C code compiled for this computer (software-in-the-loop; "
+               "needs a C compiler, see docs/SIL.md).")
     reg.number("control.loop_rate", 1000.0, "Hz", 10.0, 10000.0, "Control loop rate",
                "How often the controller runs (the STM32G4 loop frequency).")
     reg.number("control.direct.max_torque", 40.0, "Nm", 0.0, 200.0,

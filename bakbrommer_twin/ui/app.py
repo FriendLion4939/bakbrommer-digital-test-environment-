@@ -14,7 +14,16 @@ import streamlit as st
 from bakbrommer_twin import i18n
 from bakbrommer_twin.i18n import t
 from bakbrommer_twin.ui import state
-from bakbrommer_twin.ui.views import batch, home, parameters, results, run, scenarios
+from bakbrommer_twin.ui.views import (
+    batch,
+    calibration,
+    home,
+    import_replay,
+    parameters,
+    results,
+    run,
+    scenarios,
+)
 
 # (url path, translation key of the title, material icon, render function)
 PAGES: tuple[tuple[str, str, str, Callable[[], None]], ...] = (
@@ -24,6 +33,8 @@ PAGES: tuple[tuple[str, str, str, Callable[[], None]], ...] = (
     ("run", "nav.run", ":material/play_arrow:", run.render),
     ("results", "nav.results", ":material/monitoring:", results.render),
     ("batch", "nav.batch", ":material/grid_view:", batch.render),
+    ("import", "nav.import", ":material/upload_file:", import_replay.render),
+    ("calibration", "nav.calibration", ":material/straighten:", calibration.render),
 )
 
 

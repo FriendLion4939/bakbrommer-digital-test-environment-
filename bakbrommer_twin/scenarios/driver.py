@@ -248,21 +248,30 @@ class RouteDriver:
         rider.brake_rear = min(1.0, brake * self.rear_brake_ratio)
 
     def _gears(self, vehicle: Vehicle, rider: RiderInputs) -> None:
-        driveline = vehicle.driveline
-        if driveline.is_cvt:
-            return
-        if driveline.shifting:
-            if vehicle.engine.running:
-                rider.throttle = 0.0  # the rider closes the throttle while changing gear
-            return
-        gear = driveline.gear
-        if gear == 0:
-            rider.gear = 1
-            return
-        locked_speed = abs(vehicle.wheels[REAR].omega) * driveline.total_ratio(gear)
-        if locked_speed > self.upshift and gear < driveline.gear_count:
-            rider.gear = gear + 1
-        elif locked_speed < self.downshift and gear > 1:
-            rider.gear = gear - 1
-        else:
-            rider.gear = gear
+        shift_gears(vehicle, rider, self.upshift, self.downshift)
+
+
+def shift_gears(vehicle: Vehicle, rider: RiderInputs, upshift: float, downshift: float) -> None:
+    """Gear lever logic of a rider on a manual gearbox (does nothing for a CVT).
+
+    Shifts up/down when the engine speed belonging to the present road speed
+    crosses the shift speeds, and closes the throttle during the change.
+    """
+    driveline = vehicle.driveline
+    if driveline.is_cvt:
+        return
+    if driveline.shifting:
+        if vehicle.engine.running:
+            rider.throttle = 0.0  # the rider closes the throttle while changing gear
+        return
+    gear = driveline.gear
+    if gear == 0:
+        rider.gear = 1
+        return
+    locked_speed = abs(vehicle.wheels[REAR].omega) * driveline.total_ratio(gear)
+    if locked_speed > upshift and gear < driveline.gear_count:
+        rider.gear = gear + 1
+    elif locked_speed < downshift and gear > 1:
+        rider.gear = gear - 1
+    else:
+        rider.gear = gear

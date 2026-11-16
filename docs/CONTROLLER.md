@@ -30,6 +30,7 @@ Choose the implementation with the parameter `control.controller_type`:
 |---|---|
 | `reference` | The hybrid logic described below (default). |
 | `direct` | Throttle × `control.direct.max_torque` to both motors. For physics tests. |
+| `sil` | C code compiled for the PC (`docs/SIL.md`). |
 
 ## The reference controller — `control/reference/`
 
@@ -76,8 +77,7 @@ and the centrifugal clutch blends it in.
   motors: Sport and Normal accelerate almost the same above 20 km/h. The
   profile "Future battery (150 A BMS)" shows what the upgrade brings.
 
-## Adding real C code later (software-in-the-loop)
+## Real C code (software-in-the-loop)
 
-Planned for Phase 6 and documented there: the two interface classes generate
-a C header; the firmware's control function is compiled into a shared library
-for the PC and loaded as a third `control.controller_type`.
+`control.controller_type = sil` runs controller code written in C, compiled
+for the PC, through the same boundary. See `docs/SIL.md`.

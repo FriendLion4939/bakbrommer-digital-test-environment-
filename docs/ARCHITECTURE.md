@@ -7,7 +7,7 @@ in `docs/HOW_TO_CHANGE.md`.
 ## Layers (who may import whom)
 
 ```
-ui ─► reports ─► batch ─► sim ─► scenarios ─► control, sensors ─► physics ─► params
+ui ─► reports ─► calibration ─► data_import ─► batch ─► sim ─► scenarios ─► control, sensors ─► physics ─► params
 (i18n — the translation helper — may be used by reports and ui)
 ```
 
@@ -59,6 +59,10 @@ knows nothing about scenarios, controllers or the UI.
 |---|---|
 | `interface.py` | `ControllerInputs`, `ControllerOutputs`, `Controller` protocol — the brain's boundary. |
 | `direct.py` | `DirectController`: throttle straight to the motors. |
+| `reference/` | The STM32G4 logic in Python, one file per block (see `docs/CONTROLLER.md`). |
+| `sil/header.py`, `sil/bb_controller.h` | C header generated from `interface.py`. |
+| `sil/build.py`, `sil/bridge.py` | Compile a C controller and load it (`docs/SIL.md`). |
+| `sil/example_controller.c` | Working example of a controller in C. |
 | `factory.py` | `create_controller()`: picks the implementation from the parameters. |
 
 ### `bakbrommer_twin/scenarios/`
@@ -89,6 +93,20 @@ knows nothing about scenarios, controllers or the UI.
 | `optimiser.py` | Differential-evolution search with hard safety constraints. |
 | `tables.py` | Results of many runs as a table. |
 
+### `bakbrommer_twin/data_import/` and `calibration/` — real ride data
+| File | What it does |
+|---|---|
+| `data_import/channels.py` | The channels a log can contain, with plausible ranges. |
+| `data_import/mapping.py` | CSV column mappings (saved YAML), suggestion from column names. |
+| `data_import/csv_log.py` | CSV reader. |
+| `data_import/can_defs.py` | CAN message definitions (YAML), bit-level decode/encode. |
+| `data_import/dbc.py` | `.dbc` → CAN definitions. |
+| `data_import/can_log.py` | candump and SavvyCAN readers, frame decoding. |
+| `data_import/rawlog.py`, `recording.py` | A log as read / a cleaned recording on one time grid. |
+| `data_import/clean.py` | Range check, resampling, gaps, filter, time alignment. |
+| `data_import/replay.py` | `ReplayDriver`, `replay()`, gear inference, fit quality. |
+| `calibration/fit.py` | Least-squares fit of parameters to a recording; accept into a profile. |
+
 ### `bakbrommer_twin/reports/` — charts, tables, exports
 | File | What it does |
 |---|---|
@@ -110,7 +128,8 @@ knows nothing about scenarios, controllers or the UI.
 | `result_view.py` | Shows one run (used by Run and Results). |
 | `scenario_form.py` | Scenario ↔ editable tables. |
 | `batch_common.py` | Controls shared by the batch tools. |
-| `views/home.py`, `parameters.py`, `scenarios.py`, `run.py`, `results.py`, `batch.py` | One file per page, each with `render()`. |
+| `import_steps.py` | File picker, column-mapping wizard, CAN decoding of the import page. |
+| `views/home.py`, `parameters.py`, `scenarios.py`, `run.py`, `results.py`, `batch.py`, `import_replay.py`, `calibration.py` | One file per page, each with `render()`. |
 
 Charts follow a few fixed rules (see `reports/style.py`): one y-axis per
 chart and one unit per chart; a signal keeps its colour, runs differ by line
@@ -123,8 +142,9 @@ style; red/orange are reserved for warnings and always come with a label.
 | `bakbrommer_twin/paths.py` | Where data and results are stored. |
 | `bakbrommer_twin/cli.py` | Command line (`ui`, `params`, `derived`, `scenarios`, `run`). |
 | `data/profiles/`, `data/scenarios/` | Vehicle profiles and the scenario library (YAML). |
+| `data/can/`, `data/mappings/`, `data/example_logs/`, `data/recordings/` | CAN definitions, column mappings, synthetic example logs, saved recordings. |
 | `tests/` | pytest suite. `helpers.py` has the test rig; `reference/` holds regression numbers. |
-| `scripts/check.sh`, `scripts/update_reference.py` | Quality gate; regenerate regression numbers. |
+| `scripts/check.sh`, `scripts/update_reference.py`, `scripts/make_example_logs.py` | Quality gate; regenerate regression numbers; regenerate the synthetic example logs. |
 
 ## One simulation step (`sim/simulator.py` → `physics/vehicle.py`)
 
@@ -175,6 +195,9 @@ data/profiles/*.yaml ── ProfileStore.load ─┘ (base profile first, then o
 | add a scenario metric type | `scenarios/metrics.py` |
 | change the simulated rider | `scenarios/driver.py` |
 | add a controller | `control/` + `control/factory.py` |
+| read a new log format | `data_import/` (see the recipe) |
+| change how logs are cleaned | `data_import/clean.py` |
+| change what calibration compares | `calibration/fit.py` |
 | add a calculated value to the UI | `params/derived.py` |
 | add or change a standard chart | `reports/chart_defs.py` |
 | change how charts look | `reports/style.py`, `reports/figures.py` |

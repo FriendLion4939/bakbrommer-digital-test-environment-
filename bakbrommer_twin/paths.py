@@ -36,3 +36,23 @@ def profiles_dir() -> Path:
 def scenarios_dir() -> Path:
     """Folder with scenario files (YAML)."""
     return data_dir() / "scenarios"
+
+
+def mappings_dir() -> Path:
+    """Folder with saved column mappings (YAML)."""
+    return data_dir() / "mappings"
+
+
+def can_dir() -> Path:
+    """Folder with CAN message definition files (YAML)."""
+    return data_dir() / "can"
+
+
+def example_logs_dir() -> Path:
+    """Folder with the shipped example logs (synthetic)."""
+    return data_dir() / "example_logs"
+
+
+def recordings_dir() -> Path:
+    """Folder where imported, cleaned recordings are stored."""
+    return data_dir() / "recordings"

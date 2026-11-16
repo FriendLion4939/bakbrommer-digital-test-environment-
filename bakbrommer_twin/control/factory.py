@@ -12,11 +12,13 @@ from collections.abc import Callable
 from bakbrommer_twin.control.direct import DirectController
 from bakbrommer_twin.control.interface import Controller
 from bakbrommer_twin.control.reference.controller import ReferenceController
+from bakbrommer_twin.control.sil.bridge import SilController
 from bakbrommer_twin.params.paramset import ParamSet
 
 _BUILDERS: dict[str, Callable[[ParamSet], Controller]] = {
     "reference": ReferenceController,
     "direct": DirectController,
+    "sil": SilController,
 }
 
 

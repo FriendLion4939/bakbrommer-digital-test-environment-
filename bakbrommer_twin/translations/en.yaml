@@ -12,6 +12,8 @@ nav:
   run: Run a simulation
   results: Results and comparison
   batch: Sweeps and optimiser
+  import: Import and replay a ride
+  calibration: Calibration
 status:
   measured: measured
   estimated: estimated
@@ -331,3 +333,91 @@ batch:
   best_found: "Best safe settings after {runs} simulations:"
   apply: Use these values in the working profile
   applied: Values applied (not saved yet - save on the Parameters page).
+import:
+  title: Import and replay a real ride
+  intro: Read a log from the SD card or the CAN adapter, check its quality, then let the simulator ride the same inputs and compare.
+  step_file: 1. Choose a log file
+  step_read: 2. Tell the program what is in it
+  step_clean: 3. Clean and check
+  step_replay: 4. Replay in the simulator
+  upload: Upload a log (CSV, candump .log, SavvyCAN .csv)
+  example: ... or try a shipped example
+  example_note: The examples are SYNTHETIC - made by the simulator, not measured on the vehicle.
+  pick_first: Choose a file to continue.
+  mapping: Column mapping
+  mapping_suggest: (guess from the column names)
+  time_column: Time column
+  time_unit: Time unit
+  mapping_help: For each column choose which sensor it is and its unit. Leave the channel empty to ignore a column. Value = raw x scale + offset.
+  mapping_invalid: "The mapping is not usable yet: {error}"
+  mapping_name: Save this mapping as (lower-case letters, digits, _)
+  mapping_save: Save mapping
+  mapping_saved: Mapping saved. Next time pick it from the list.
+  dbc_title: Convert a .dbc file into an editable definition file
+  dbc_help: Reads messages and signals from a Vector .dbc file. Afterwards give every signal you need a 'channel' in the definition file.
+  dbc_upload: .dbc file
+  dbc_name: Name of the new definition file
+  dbc_convert: Convert
+  dbc_done: "Converted {count} messages."
+  no_definitions: No CAN definition file found in data/can.
+  definitions: CAN definition file
+  edit_definitions: View or edit this definition file
+  edit_definitions_help: Identifiers, bit positions, scales and units must match what the firmware sends. 'channel' tells the program which sensor a signal is.
+  definitions_text: Definition file (YAML)
+  definitions_save: Save definition file
+  definitions_saved: Definition file saved.
+  definitions_invalid: "Not saved - the file is not valid: {error}"
+  can_summary: "{frames} frames read, {bad} unreadable lines, {channels} channels decoded."
+  rate: Resample to [Hz]
+  gap: Longest pause that is not a gap [s]
+  lowpass: Smoothing filter [Hz]
+  lowpass_help: Low-pass cut-off frequency. 0 = no smoothing.
+  col_channel: Channel
+  col_samples: Samples in file
+  col_rate: Rate in file [Hz]
+  col_rejected: Impossible values removed
+  col_gaps: Gaps
+  col_longest_gap: Longest gap [s]
+  col_coverage: Usable [%]
+  duration: "Recording length {seconds:.1f} s"
+  recording_name: Save the cleaned recording as (for the Calibration page)
+  recording_save: Save recording
+  recording_saved: Recording saved.
+  replay_help: "The simulator is given the recorded throttle, brake and steering and uses the profile '{profile}'. It assumes level ground."
+  replay_needs_throttle: A replay needs at least the throttle channel.
+  replay_run: Replay this ride
+  replay_name: "Replay of {source}"
+  synthetic_note: This recording is a synthetic example - a good match here says nothing about the real vehicle.
+  overlay_channels: Channels to compare (solid = simulated, the 'Measured' line = log)
+  fit_title: How well does the simulation match?
+  fit_help: RMSE = typical difference; bias = simulation minus measurement on average; R2 = 1 is a perfect match.
+  what_if_title: What if ...? Replay the same ride with a changed setting
+  what_if_help: Choose parameters and new values. The ride is replayed with them and compared with the first replay (dashed line).
+  what_if_run: Replay with these changes
+  what_if_name: What-if replay
+calibration:
+  title: Calibration
+  intro: Let the program adjust uncertain parameters until the replay of a recorded ride matches the measurement. Fit few parameters at a time, with a ride that shows their effect.
+  no_recording: Import a log first (page 'Import and replay a ride') or save a cleaned recording there.
+  recording: Recording
+  session_recording: (the recording just imported)
+  params: Parameters to fit
+  params_help: Each extra parameter needs more simulations and makes the answer less certain. Mass and rolling resistance can hide each other on a flat road.
+  targets: Measured channels to match
+  budget: Simulation budget
+  budget_help: More simulations can give a better fit and take longer.
+  run: Calibrate
+  values_title: Fitted values
+  before: Before
+  after: Fitted
+  evaluations: "{count} simulations. Solver message: {message}"
+  at_limit: "These parameters ended at the edge of their allowed range, which usually means the model cannot explain the data with them: {names}"
+  quality_title: Fit quality before and after
+  rmse_before: RMSE before
+  rmse_after: RMSE after
+  r2_before: R2 before
+  r2_after: R2 after
+  quality_help: Check that the channels you did not fit did not get worse.
+  synthetic_note: This recording is a synthetic example. The values can be accepted to try the tool, but the profile will NOT be marked as validated.
+  accept: "Accept these values into the working profile '{profile}'"
+  accepted: Values accepted and marked 'calibrated'. Save the profile on the Parameters page to keep them.

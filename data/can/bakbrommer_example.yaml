@@ -1,0 +1,50 @@
+# EXAMPLE CAN layout. It is NOT the real firmware's layout - it only matches
+# the synthetic example logs in data/example_logs. Edit the identifiers, bit
+# positions, scales and units so they match what your STM32 firmware and the
+# Fardriver controllers actually send, or convert a .dbc file in the UI.
+name: Bakbrommer example bus (edit to match your firmware)
+bitrate: 500000
+messages:
+  - id: 0x101
+    name: RIDER_INPUTS
+    signals:
+      - {name: throttle, channel: throttle, start_bit: 0, length: 16, scale: 0.01, unit: "%"}
+      - {name: brake_front, channel: brake_front_pressure, start_bit: 16, length: 16, scale: 0.01, unit: bar}
+      - {name: brake_rear, channel: brake_rear_pressure, start_bit: 32, length: 16, scale: 0.01, unit: bar}
+      - {name: steering, channel: steering_angle, start_bit: 48, length: 16, signed: true, scale: 0.01, unit: deg}
+  - id: 0x102
+    name: SPEEDS
+    signals:
+      - {name: vehicle_speed, channel: vehicle_speed, start_bit: 0, length: 16, signed: true, scale: 0.01, unit: km/h}
+      - {name: wheel_fl, channel: wheel_speed_fl, start_bit: 16, length: 16, signed: true, scale: 0.1, unit: rpm}
+      - {name: wheel_fr, channel: wheel_speed_fr, start_bit: 32, length: 16, signed: true, scale: 0.1, unit: rpm}
+      - {name: wheel_rear, channel: wheel_speed_r, start_bit: 48, length: 16, signed: true, scale: 0.1, unit: rpm}
+  - id: 0x103
+    name: IMU_ACCEL
+    length: 6
+    signals:
+      - {name: acc_x, channel: accel_x, start_bit: 0, length: 16, signed: true, scale: 0.002, unit: m/s²}
+      - {name: acc_y, channel: accel_y, start_bit: 16, length: 16, signed: true, scale: 0.002, unit: m/s²}
+      - {name: acc_z, channel: accel_z, start_bit: 32, length: 16, signed: true, scale: 0.002, unit: m/s²}
+  - id: 0x104
+    name: IMU_GYRO
+    length: 6
+    signals:
+      - {name: gyro_x, channel: gyro_x, start_bit: 0, length: 16, signed: true, scale: 0.02, unit: deg/s}
+      - {name: gyro_y, channel: gyro_y, start_bit: 16, length: 16, signed: true, scale: 0.02, unit: deg/s}
+      - {name: gyro_z, channel: gyro_z, start_bit: 32, length: 16, signed: true, scale: 0.02, unit: deg/s}
+  - id: 0x105
+    name: BATTERY
+    length: 4
+    signals:
+      - {name: voltage, channel: battery_voltage, start_bit: 0, length: 16, scale: 0.01, unit: V}
+      - {name: current, channel: battery_current, start_bit: 16, length: 16, signed: true, scale: 0.01, unit: A}
+  - id: 0x106
+    name: POWERTRAIN_STATUS
+    length: 6
+    signals:
+      - {name: engine_speed, channel: engine_speed, start_bit: 0, length: 16, scale: 1.0, unit: rpm}
+      - {name: motor_temp_left, channel: motor_temp_l, start_bit: 16, length: 8, signed: true, scale: 1.0, unit: °C}
+      - {name: motor_temp_right, channel: motor_temp_r, start_bit: 24, length: 8, signed: true, scale: 1.0, unit: °C}
+      - {name: ride_mode, channel: ride_mode, start_bit: 32, length: 8, scale: 1.0, unit: "-"}
+      - {name: alive_counter, start_bit: 40, length: 8}

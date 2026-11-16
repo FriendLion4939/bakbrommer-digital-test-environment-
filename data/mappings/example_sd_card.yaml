@@ -1,0 +1,24 @@
+name: Example SD card log (matches data/example_logs/example_ride_sd.csv)
+time_column: t_ms
+time_unit: ms
+columns:
+- {column: thr_pct, channel: throttle, unit: '%'}
+- {column: brk_f_bar, channel: brake_front_pressure, unit: bar}
+- {column: brk_r_bar, channel: brake_rear_pressure, unit: bar}
+- {column: steer_deg, channel: steering_angle, unit: deg}
+- {column: eng_rpm, channel: engine_speed, unit: rpm}
+- {column: spd_kmh, channel: vehicle_speed, unit: km/h}
+- {column: ws_fl_rpm, channel: wheel_speed_fl, unit: rpm}
+- {column: ws_fr_rpm, channel: wheel_speed_fr, unit: rpm}
+- {column: ws_r_rpm, channel: wheel_speed_r, unit: rpm}
+- {column: acc_x, channel: accel_x, unit: m/s²}
+- {column: acc_y, channel: accel_y, unit: m/s²}
+- {column: acc_z, channel: accel_z, unit: m/s²}
+- {column: gyr_x_dps, channel: gyro_x, unit: deg/s}
+- {column: gyr_y_dps, channel: gyro_y, unit: deg/s}
+- {column: gyr_z_dps, channel: gyro_z, unit: deg/s}
+- {column: vbat_V, channel: battery_voltage, unit: V}
+- {column: ibat_A, channel: battery_current, unit: A}
+- {column: tmot_l_C, channel: motor_temp_l, unit: °C}
+- {column: tmot_r_C, channel: motor_temp_r, unit: °C}
+- {column: mode, channel: ride_mode, unit: '-'}

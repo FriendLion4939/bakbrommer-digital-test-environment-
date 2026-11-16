@@ -15,7 +15,7 @@ from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.reports import style
 from bakbrommer_twin.reports.chart_defs import ChartDef
 from bakbrommer_twin.scenarios.route import Route
-from bakbrommer_twin.scenarios.scenario import Scenario
+from bakbrommer_twin.scenarios.scenario import REPLAY_CATEGORY, Scenario
 from bakbrommer_twin.sim.result import RunResult
 
 _ROW_HEIGHT = 230  # px per stacked chart
@@ -33,8 +33,13 @@ def thin(values: Array, limit: int = style.MAX_POINTS) -> Array:
 
 def chart_title(chart: ChartDef, result: RunResult) -> str:
     """Translated title with unit, e.g. ``Wheel loads [N]``."""
-    title = t(f"chart.{chart.key}") if not chart.key.startswith("custom_") else ", ".join(
-        result.info(name).label for name in chart.channels)
+    if chart.key.startswith("custom_"):
+        # "Sensor: Vehicle speed" and "Measured: Vehicle speed" share one title
+        names = dict.fromkeys(result.info(name).label.split(": ", 1)[-1]
+                              for name in chart.channels)
+        title = ", ".join(names)
+    else:
+        title = t(f"chart.{chart.key}")
     unit = result.info(chart.channels[0]).unit
     return title if unit in ("", "-") else f"{title} [{unit}]"
 
@@ -105,7 +110,7 @@ def route_of(result: RunResult) -> Route | None:
     """Rebuild the route a run was driven on (None for replays without a route)."""
     params = ParamSet.from_display_dict(REGISTRY, result.meta.params)
     scenario = Scenario.model_validate(result.meta.scenario)
-    if not scenario.route:
+    if scenario.category == REPLAY_CATEGORY:
         return None
     return Route(scenario.route, params.num("sim.route_sample_spacing"),
                  params.choice("environment.default_surface"))
