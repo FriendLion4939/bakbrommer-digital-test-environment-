@@ -26,3 +26,11 @@ def store(tmp_path: Path) -> ProfileStore:
     for source in (paths.PROJECT_ROOT / "data" / "profiles").glob("*.yaml"):
         shutil.copy(source, target / source.name)
     return ProfileStore(target, REGISTRY)
+
+
+@pytest.fixture
+def quiet(params: ParamSet) -> ParamSet:
+    """Defaults with ideal sensors and no BMS trip: for testing the physics alone."""
+    params.set("sensors.ideal", True)
+    params.set("battery.bms_trip_enabled", False)
+    return params

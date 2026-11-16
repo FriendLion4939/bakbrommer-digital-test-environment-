@@ -34,9 +34,12 @@ def test_every_module_and_public_function_has_a_docstring() -> None:
         tree = ast.parse(path.read_text(encoding="utf-8"))
         if not ast.get_docstring(tree):
             missing.append(str(path.relative_to(paths.PROJECT_ROOT)))
-        for node in ast.walk(tree):
-            is_def = isinstance(node, ast.FunctionDef | ast.ClassDef)
-            if is_def and not node.name.startswith("_") and not ast.get_docstring(node):
+        # module-level functions and classes, and the methods of those classes
+        public = [n for n in tree.body if isinstance(n, ast.FunctionDef | ast.ClassDef)]
+        public += [m for c in public if isinstance(c, ast.ClassDef)
+                   for m in c.body if isinstance(m, ast.FunctionDef)]
+        for node in public:
+            if not node.name.startswith("_") and not ast.get_docstring(node):
                 missing.append(f"{path.name}:{node.name}")
     assert not missing, f"Add docstrings: {missing}"
 

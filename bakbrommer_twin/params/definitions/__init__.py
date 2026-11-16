@@ -6,10 +6,24 @@ To add a category: create a module with ``register(reg)`` and add it to
 
 from __future__ import annotations
 
-from bakbrommer_twin.params.definitions import geometry
+from bakbrommer_twin.params.definitions import (
+    aero,
+    battery,
+    brakes,
+    control,
+    driver,
+    engine,
+    geometry,
+    motor,
+    sensors,
+    sim,
+    steering,
+    wheels,
+)
 from bakbrommer_twin.params.registry import Registry
 
-_MODULES = (geometry,)
+_MODULES = (geometry, wheels, steering, motor, battery, engine, brakes, aero, sensors,
+            control, driver, sim)
 
 
 def build_registry() -> Registry:

@@ -1,0 +1,9 @@
+name: Acceleration 0-50 km/h
+description: Full throttle from standstill on a level dry road until 50 km/h.
+category: longitudinal
+route:
+  - {type: straight, length_m: 600, speed_kmh: 60, throttle: 1.0}
+end: {time_limit_s: 60, at_speed_kmh: 50}
+metrics:
+  - {type: time_to_speed, speed_kmh: 30}
+  - {type: time_to_speed, speed_kmh: 50}

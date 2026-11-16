@@ -12,7 +12,10 @@ from dataclasses import dataclass
 
 from bakbrommer_twin.params import units
 from bakbrommer_twin.params.paramset import ParamSet
-from bakbrommer_twin.physics import mass
+from bakbrommer_twin.physics import mass, performance
+from bakbrommer_twin.physics.aero import drag_area
+from bakbrommer_twin.physics.battery import Battery
+from bakbrommer_twin.physics.motors import ElectricDrive
 
 
 @dataclass(frozen=True)
@@ -82,7 +85,57 @@ def _stability_values(p: ParamSet) -> list[DerivedValue]:
     ]
 
 
-_GROUPS: tuple[Callable[[ParamSet], list[DerivedValue]], ...] = (_mass_values, _stability_values)
+def _powertrain_values(p: ParamSet) -> list[DerivedValue]:
+    group = "Power and speed"
+    props = mass.mass_properties(p)
+    engine_power, engine_speed = performance.engine_peak_power(p)
+    electric_power = performance.electric_power_limit(p)
+    drive = ElectricDrive(p)
+    voltage = performance.nominal_battery_voltage(p)
+    full = Battery(p)
+    full.soc = 1.0
+    values = [
+        DerivedValue("engine_peak_power", "Petrol engine peak power", engine_power, "kW",
+                     "Highest crankshaft power on the torque curve.", group),
+        DerivedValue("engine_peak_power_speed", "Engine speed at peak power", engine_speed,
+                     "rpm", "Engine speed at which the power peaks.", group),
+        DerivedValue("electric_power_limit", "Electric power allowed by the battery",
+                     electric_power, "kW",
+                     "Battery voltage × the smaller of BMS limit and both controller "
+                     "line-current limits.", group),
+        DerivedValue("motor_peak_torque", "Peak torque per motor",
+                     drive.kt * drive.peak_current, "Nm",
+                     "Torque constant × peak phase current.", group),
+        DerivedValue("motor_rated_power_total", "Rated motor power, both motors",
+                     2.0 * p.num("motor.rated_power"), "kW",
+                     "Continuous rating from the motor labels.", group),
+        DerivedValue("electric_no_load_speed", "Electric no-load speed",
+                     drive.modulation * voltage * drive.field_weakening / drive.ke
+                     * drive.wheel_radius, "km/h",
+                     "Speed at which the motors can no longer push (back-EMF equals the "
+                     "usable battery voltage).", group),
+        DerivedValue("power_to_weight", "Power-to-weight ratio",
+                     (engine_power + electric_power) / props.mass, "W/kg",
+                     "Engine peak power plus allowed electric power, per kg of total mass.",
+                     group),
+        DerivedValue("battery_energy", "Battery energy when full", full.energy_remaining(),
+                     "kWh", "Capacity × rest voltage at 100 % (coarse).", group),
+        DerivedValue("drag_area", "Drag area (Cd × A)", drag_area(p), "m²",
+                     "Drag coefficient of the selected cargo box shape × frontal area.", group),
+        DerivedValue("top_speed_estimate", "Top speed estimate (level, no wind)",
+                     performance.top_speed_estimate(p), "km/h",
+                     "Speed at which engine plus motor power equals air and rolling "
+                     "resistance.", group),
+    ]
+    for gear, speed in enumerate(performance.gear_speeds(p), start=1):
+        values.append(DerivedValue(f"gear_{gear}_speed", f"Speed at the rev limit, gear {gear}",
+                                   speed, "km/h",
+                                   "Road speed when the engine reaches its rev limit.", group))
+    return values
+
+
+_GROUPS: tuple[Callable[[ParamSet], list[DerivedValue]], ...] = (
+    _mass_values, _stability_values, _powertrain_values)
 
 
 def compute_derived(params: ParamSet) -> list[DerivedValue]:

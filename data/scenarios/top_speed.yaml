@@ -1,0 +1,10 @@
+name: Top speed run
+description: Full throttle on a long level dry road until the speed no longer rises.
+category: longitudinal
+route:
+  - {type: straight, length_m: 3000, speed_kmh: 150, throttle: 1.0}
+end: {time_limit_s: 90}
+metrics:
+  - {type: top_speed}
+  - {type: steady_speed}
+  - {type: time_to_speed, speed_kmh: 50}

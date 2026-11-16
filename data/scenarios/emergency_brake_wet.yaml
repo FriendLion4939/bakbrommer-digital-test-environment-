@@ -1,0 +1,11 @@
+name: Emergency braking, wet asphalt
+description: Full braking with both levers from 50 km/h to standstill on wet asphalt.
+category: longitudinal
+initial: {speed_kmh: 50}
+route:
+  - {type: straight, length_m: 20, speed_kmh: 50, surface: wet_asphalt}
+  - {type: straight, length_m: 150, speed_kmh: 0, surface: wet_asphalt, brake: 1.0}
+end: {time_limit_s: 30, when_stopped: true}
+metrics:
+  - {type: braking_distance}
+  - {type: braking_deceleration}

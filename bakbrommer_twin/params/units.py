@@ -99,10 +99,13 @@ UNITS: dict[str, tuple[str, float, float]] = {
     "bar": ("Pa", 1e5, 0.0),
     # consumption
     "L/100km": ("m³/m", 1e-3 / 1e5, 0.0),
+    "L/h": ("m³/s", 1e-3 / 3600.0, 0.0),
     "Wh/km": ("J/m", 3.6, 0.0),
     "g/kWh": ("kg/J", 1e-3 / 3.6e6, 0.0),
     "W/kg": ("W/kg", 1.0, 0.0),
     "s²/m²": ("s²/m²", 1.0, 0.0),
+    "s/m": ("s/m", 1.0, 0.0),
+    "s/rad": ("s/rad", 1.0, 0.0),
 }
 
 

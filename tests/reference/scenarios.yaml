@@ -1,0 +1,145 @@
+accel_0_50:
+  end_reason: speed_reached
+  values:
+    battery_energy: 13735.6
+    bms_trips: 0.0
+    distance: 62.9648
+    duration: 7.68
+    fuel_used: 3.38234e-06
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 13.8889
+    min_rollover_margin: 1.0
+    peak_battery_current: 32.297
+    rolled_over: 0.0
+    time_0_30: 3.49432
+    time_0_50: 7.67997
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+emergency_brake_dry:
+  end_reason: stopped
+  values:
+    battery_energy: 1565.69
+    bms_trips: 0.0
+    braking_deceleration: 8.21908
+    braking_distance: 10.8678
+    distance: 31.176
+    duration: 3.13
+    fuel_used: 1.54677e-07
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 13.8889
+    min_rollover_margin: 1.0
+    peak_battery_current: 23.5381
+    rolled_over: 0.0
+    wheel_lift_events: 0.0
+    wheel_lock_events: 3.0
+emergency_brake_wet:
+  end_reason: stopped
+  values:
+    battery_energy: 1605.69
+    bms_trips: 0.0
+    braking_deceleration: 5.50939
+    braking_distance: 15.9859
+    distance: 36.2877
+    duration: 3.92
+    fuel_used: 1.69342e-07
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 13.8889
+    min_rollover_margin: 1.0
+    peak_battery_current: 23.8849
+    rolled_over: 0.0
+    wheel_lift_events: 0.0
+    wheel_lock_events: 3.0
+hill_climb_10:
+  end_reason: route_end
+  values:
+    battery_energy: 100827.0
+    bms_trips: 0.0
+    distance: 630.086
+    duration: 47.65
+    fuel_used: 2.50012e-05
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 15.0071
+    min_rollover_margin: 1.0
+    peak_battery_current: 32.3005
+    rolled_over: 0.0
+    steady_speed: 15.0029
+    top_speed: 15.0071
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+hill_climb_15:
+  end_reason: route_end
+  values:
+    battery_energy: 127865.0
+    bms_trips: 0.0
+    distance: 630.096
+    duration: 59.7
+    fuel_used: 2.44456e-05
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 11.2825
+    min_rollover_margin: 1.0
+    peak_battery_current: 32.301
+    rolled_over: 0.0
+    steady_speed: 11.282
+    top_speed: 11.2825
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+hill_climb_5:
+  end_reason: route_end
+  values:
+    battery_energy: 87656.6
+    bms_trips: 0.0
+    distance: 630.097
+    duration: 42.59
+    fuel_used: 2.09387e-05
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 16.7435
+    min_rollover_margin: 1.0
+    peak_battery_current: 32.2995
+    rolled_over: 0.0
+    steady_speed: 16.7244
+    top_speed: 16.7435
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+hill_descent_10:
+  end_reason: route_end
+  values:
+    battery_energy: 4112.34
+    bms_trips: 0.0
+    distance: 530.039
+    duration: 63.59
+    fuel_used: 1.22532e-06
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 8.61742
+    min_rollover_margin: 1.0
+    peak_battery_current: 10.3509
+    rolled_over: 0.0
+    steady_speed: 8.33333
+    top_speed: 8.61742
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+top_speed:
+  end_reason: time_limit
+  values:
+    battery_energy: 66648.5
+    bms_trips: 0.0
+    distance: 1503.42
+    duration: 90.0
+    fuel_used: 5.00869e-05
+    max_lateral_accel: 0.0
+    max_roll: 0.0
+    max_speed: 17.6304
+    min_rollover_margin: 1.0
+    peak_battery_current: 32.2977
+    rolled_over: 0.0
+    steady_speed: 17.6271
+    time_0_50: 7.67997
+    top_speed: 17.6304
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0

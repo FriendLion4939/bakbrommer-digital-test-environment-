@@ -1,0 +1,11 @@
+name: Hill climb 5 %
+description: Approach at 30 km/h, then climb a 5 % gradient at full throttle. Shows the speed the vehicle can hold.
+category: longitudinal
+initial: {speed_kmh: 30}
+route:
+  - {type: straight, length_m: 30, speed_kmh: 30}
+  - {type: straight, length_m: 600, speed_kmh: 60, gradient_pct: 5, throttle: 1.0}
+end: {time_limit_s: 60}
+metrics:
+  - {type: steady_speed}
+  - {type: top_speed}
