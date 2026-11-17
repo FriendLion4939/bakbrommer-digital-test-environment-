@@ -141,6 +141,42 @@ hill_descent_10:
     top_speed: 8.67529
     wheel_lift_events: 0.0
     wheel_lock_events: 0.0
+hill_descent_15:
+  end_reason: route_end
+  values:
+    battery_energy: -13930.6
+    bms_trips: 0.0
+    distance: 530.045
+    duration: 63.44
+    fuel_used: 1.21346e-06
+    max_lateral_accel: 0.000975841
+    max_roll: 6.09924e-06
+    max_speed: 8.93256
+    min_rollover_margin: 0.999608
+    peak_battery_current: 11.2121
+    rolled_over: 0.0
+    steady_speed: 8.33446
+    top_speed: 8.93256
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
+hill_descent_5:
+  end_reason: route_end
+  values:
+    battery_energy: 12666.2
+    bms_trips: 0.0
+    distance: 530.024
+    duration: 63.63
+    fuel_used: 1.23689e-06
+    max_lateral_accel: 0.000975841
+    max_roll: 6.80118e-06
+    max_speed: 8.50513
+    min_rollover_margin: 0.999592
+    peak_battery_current: 11.2121
+    rolled_over: 0.0
+    steady_speed: 8.33342
+    top_speed: 8.50513
+    wheel_lift_events: 0.0
+    wheel_lock_events: 0.0
 lane_change_full_cargo:
   end_reason: route_end
   values:

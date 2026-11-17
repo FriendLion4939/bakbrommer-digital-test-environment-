@@ -68,19 +68,17 @@ def _charts(result: RunResult, key: str) -> None:
 
 
 def _export(result: RunResult, key: str) -> None:
+    """Three download buttons; each file is only built when its button is pressed."""
     st.caption(t("result.export_intro"))
     csv_col, html_col, pdf_col = st.columns(3)
-    name = result.meta.name.replace(" ", "_")
-    csv_col.download_button(t("result.export_csv"), export.csv_text(result), f"{name}.csv",
-                            "text/csv", key=f"{key}_csv", width="stretch")
-    if html_col.button(t("result.prepare_html"), key=f"{key}_html", width="stretch"):
-        html_col.download_button(t("result.download_html"), export.html_report(result),
-                                 f"{name}.html", "text/html", key=f"{key}_html_dl",
-                                 width="stretch")
-    if pdf_col.button(t("result.prepare_pdf"), key=f"{key}_pdf", width="stretch"):
-        pdf_col.download_button(t("result.download_pdf"), export.pdf_report(result),
-                                f"{name}.pdf", "application/pdf", key=f"{key}_pdf_dl",
-                                width="stretch")
+    name = export.file_stem(result)
+    csv_col.download_button(t("result.export_csv"), lambda: export.csv_text(result),
+                            f"{name}.csv", "text/csv", key=f"{key}_csv", width="stretch")
+    html_col.download_button(t("result.download_html"), lambda: export.html_report(result),
+                             f"{name}.html", "text/html", key=f"{key}_html", width="stretch")
+    pdf_col.download_button(t("result.download_pdf"), lambda: export.pdf_report(result),
+                            f"{name}.pdf", "application/pdf", key=f"{key}_pdf",
+                            width="stretch")
 
 
 def render_result(result: RunResult, key: str = "result") -> None:

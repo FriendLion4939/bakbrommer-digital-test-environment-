@@ -49,7 +49,8 @@ def _translation_keys_in_code() -> set[str]:
         pattern = r"""\bt\(\s*["']([a-z0-9_.]+)["']\s*[,)]"""
         keys.update(re.findall(pattern, path.read_text("utf-8")))
         # keys kept in constants such as AXIS_LABELS = {"time": "result.axis_time"}
-        keys.update(re.findall(r""":\s*"((?:result|batch)\.[a-z_]+)\"""", path.read_text("utf-8")))
+        constants = r""":\s*"((?:result|batch|curves)\.[a-z_]+)\""""
+        keys.update(re.findall(constants, path.read_text("utf-8")))
     # titles referenced as plain strings in ui/app.py PAGES
     keys.update(re.findall(r'"(nav\.[a-z_]+)"', (PACKAGE / "ui" / "app.py").read_text("utf-8")))
     return keys

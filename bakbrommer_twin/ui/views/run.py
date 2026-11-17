@@ -29,8 +29,11 @@ def render() -> None:
     if scenario.profile and scenario.profile != profile.key:
         st.info(t("run.suggested_profile", profile=scenario.profile))
     name = st.text_input(t("run.name"), f"{scenario.name} — {profile.name}")
-    if st.button(t("run.start"), type="primary"):
-        bar = st.progress(0.0, t("run.running"))
+    pressed = st.button(t("run.start"), type="primary")
+    # Always present, so the page layout (and the open result tab) stays the same on every rerun.
+    progress_slot = st.empty()
+    if pressed:
+        bar = progress_slot.progress(0.0, t("run.running"))
         try:
             result = run_scenario(profile.params, scenario, profile_name=profile.name,
                                   validated=profile.validated, name=name,

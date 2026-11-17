@@ -28,7 +28,8 @@ def thin(values: Array, limit: int = style.MAX_POINTS) -> Array:
         return values
     step = int(np.ceil(len(values) / limit))
     picked = values[::step]
-    return picked if picked[-1] == values[-1] else np.append(picked, values[-1])
+    # Decided by position, not by value, so every channel of a run thins to the same length.
+    return picked if (len(values) - 1) % step == 0 else np.append(picked, values[-1])
 
 
 def chart_title(chart: ChartDef, result: RunResult) -> str:

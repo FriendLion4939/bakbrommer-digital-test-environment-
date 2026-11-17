@@ -76,6 +76,16 @@ def test_long_runs_are_thinned_for_the_browser() -> None:
     assert thin(values[:100]) is not None and len(thin(values[:100])) == 100
 
 
+def test_thinning_gives_every_channel_the_same_length() -> None:
+    # A signal that ends on the value of its last kept sample (speed 0 after a stop)
+    # used to lose its final point, so the PDF report crashed on long runs.
+    time = np.arange(3189 * 7 + 1, dtype=float)
+    speed = np.zeros_like(time)
+    speed[:100] = 5.0
+    assert len(thin(time, 3000)) == len(thin(speed, 3000))
+    assert thin(speed, 3000)[-1] == speed[-1]
+
+
 def test_custom_channels_are_grouped_by_unit(run: RunResult) -> None:
     charts = charts_for_channels(run, ["speed", "load_fl", "wheel_speed_fl", "load_r"])
     assert [c.channels for c in charts] == [("speed", "wheel_speed_fl"), ("load_fl", "load_r")]
@@ -133,6 +143,15 @@ def test_csv_export_round_trips(run: RunResult) -> None:
     assert frame["speed [km/h]"].iloc[-1] == pytest.approx(run["speed"][-1] * 3.6, rel=1e-4)
 
 
+def test_export_file_names_are_plain_ascii(run: RunResult) -> None:
+    def named(name: str) -> RunResult:  # a copy, so the shared cached run keeps its name
+        return RunResult(run.meta.model_copy(update={"name": name}), run.data)
+
+    assert export.file_stem(named("City stop-and-go — Café/ladder: full?")) == (
+        "City_stop-and-go_-_Cafe_ladder_full")
+    assert export.file_stem(named("———")) == "run"
+
+
 def test_html_report_is_self_contained_and_labelled(run: RunResult) -> None:
     page = export.html_report(run)
     assert page.startswith("<!doctype html>") and "Plotly.newPlot" in page
@@ -145,3 +164,28 @@ def test_pdf_report_is_a_pdf_with_several_pages(run: RunResult) -> None:
     data = export.pdf_report(run)
     assert data[:5] == b"%PDF-" and len(data) > 20_000
     assert data.count(b"/Type /Page\n") + data.count(b"/Type /Page ") >= 3
+
+
+def test_curve_figures_follow_the_parameters() -> None:
+    from bakbrommer_twin.params import default_params
+    from bakbrommer_twin.reports.curve_figures import CURVES
+
+    params = default_params()
+    figures = {key: build(params) for key, build in CURVES.items()}
+    assert len(figures["tyres"].data) == 12  # six surfaces, lengthwise and sideways
+    dry = figures["tyres"].data[0]
+    assert max(dry.y) == pytest.approx(params.num("surface.dry_asphalt.friction"), rel=0.01)
+    limit = figures["motor"].data[1]
+    peak = params.num("motor.torque_constant") * params.num("motor.peak_phase_current")
+    assert max(limit.y) <= peak + 1e-6
+    efficiency = np.array(figures["motor"].data[0].z, dtype=float)
+    assert 60.0 < np.nanmax(efficiency) < 97.0
+    power = figures["engine"].data[1]
+    assert max(power.y) == pytest.approx(5.03, abs=0.05)  # kW, Lifan 110 cc curve
+    fuel = np.array(figures["engine"].data[2].z, dtype=float)
+    assert 250.0 < np.nanmin(fuel) < 420.0
+    rest, loaded = figures["battery"].data[:2]
+    assert rest.y[-1] == pytest.approx(71.4) and all(
+        a > b for a, b in zip(rest.y, loaded.y, strict=True))
+    params.set_display("surface.dry_asphalt.friction", 0.5)
+    assert max(CURVES["tyres"](params).data[0].y) == pytest.approx(0.5, rel=0.01)

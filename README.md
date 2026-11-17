@@ -188,7 +188,8 @@ More detail: `docs/DATA_IMPORT.md`.
 * **Is everything still working?** Run the automatic tests:
   `./run_tests.sh` (Linux/macOS), `run_tests.bat` (Windows) or
   `docker compose run --rm bakbrommer-twin test`. It takes a few minutes and
-  should end with "… passed".
+  should end with "… passed". A few "skipped" tests are normal on a PC
+  without a C compiler (they test the software-in-the-loop option).
 
 ## 8. For whoever maintains the code
 

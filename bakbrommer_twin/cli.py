@@ -18,13 +18,22 @@ from bakbrommer_twin.scenarios.scenario import ScenarioStore
 from bakbrommer_twin.sim.simulator import run_scenario
 
 
+def ui_command(port: int, address: str) -> list[str]:
+    """The command line that starts the web interface.
+
+    ``toolbarMode minimal`` hides Streamlit's own "Deploy" button and developer
+    menu, which mean nothing to the user of this program.
+    """
+    app = Path(__file__).parent / "ui" / "app.py"
+    return [sys.executable, "-m", "streamlit", "run", str(app),
+            "--server.port", str(port), "--server.address", address,
+            "--server.headless", "true", "--browser.gatherUsageStats", "false",
+            "--client.toolbarMode", "minimal"]
+
+
 def _cmd_ui(args: argparse.Namespace) -> int:
     """Start the web interface."""
-    app = Path(__file__).parent / "ui" / "app.py"
-    command = [sys.executable, "-m", "streamlit", "run", str(app),
-               "--server.port", str(args.port), "--server.address", args.address,
-               "--server.headless", "true", "--browser.gatherUsageStats", "false"]
-    return subprocess.call(command)
+    return subprocess.call(ui_command(args.port, args.address))
 
 
 def _cmd_params(args: argparse.Namespace) -> int:

@@ -87,6 +87,8 @@ def test_run_page_runs_a_scenario_and_shows_the_result() -> None:
     assert len(list(paths.runs_dir().iterdir())) == 1  # saved automatically
     labels = {m.label for m in app.metric}
     assert {"Time to finish", "Top speed reached"} <= labels
+    downloads = {d.proto.label for d in app.get("download_button")}
+    assert downloads == {"Download CSV", "Download HTML report", "Download PDF report"}
 
 
 def test_results_page_lists_saved_runs() -> None:

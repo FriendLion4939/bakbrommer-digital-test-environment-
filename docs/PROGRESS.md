@@ -275,3 +275,81 @@ One status note per phase, newest at the bottom.
 * Calibration runs its simulations one after another (about 1.5 s per 80 s of
   ride each).
 * SIL needs a C compiler on the machine (present in the Docker image).
+
+## Phase 7 — final pass ✅
+
+**Done**
+* Full quality gate (`scripts/check.sh`: ruff, mypy --strict, all tests):
+  349 tests pass.
+* Performance: `python scripts/performance_check.py` simulates a 10-minute
+  ride at a 1 ms step in about 30 s (20× real time, about 51 µs per step).
+  `tests/test_performance.py` keeps a shorter version of this check and
+  guards against NumPy numbers sneaking into the per-step loop.
+* README walkthrough tested step by step on a clean copy of the project
+  (no `.venv`, no results): `./start.sh` created the environment and the UI
+  answered after 42 s. Then, in a real browser (Chromium via Playwright):
+  run a scenario, safety report, NOT VALIDATED label, animation, all three
+  exports downloaded (CSV, HTML, PDF), results list, parameters with the
+  new **Curves** tab and calculated values, scenarios, sweeps, calibration,
+  and importing + replaying the shipped CAN example.
+* Docs: `tests/test_docs.py` checks that every module is listed in
+  `docs/ARCHITECTURE.md` and that file and folder names written in the docs
+  exist. `README.md` and `CLAUDE.md` rewritten for the end state.
+* Added in this phase: tyre/motor/engine/battery curves on the Parameters
+  page; hill-descent scenarios at 5 % and 15 %; command-line tests
+  (`tests/test_cli.py`).
+
+**Bugs found by the walkthrough (fixed, each with a test)**
+* The PDF report crashed for longer rides: thinning the samples for the
+  charts decided by *value* whether to keep the last sample, so a signal
+  that ended where it was last sampled (speed 0 after stopping) got one
+  point less than the time axis. Now decided by position.
+* Export buttons: "Prepare report" then "Download" needed two clicks and the
+  second button could end up on a hidden tab. Each button now downloads
+  directly; the report is built when it is pressed. File names are plain
+  ASCII (the run name "City stop-and-go — Default" contained a dash that
+  not every browser handles in a file name).
+* The page layout of "Run a simulation" changed between reruns (progress
+  bar), which reset the open result tab. The progress bar now has a fixed
+  place.
+* Streamlit's own "Deploy" button and developer menu are hidden
+  (`--client.toolbarMode minimal`); they meant nothing to the user.
+
+**Could not be done or tested here (honest list)**
+* `start.bat` (Windows) could not be run: there is no Windows machine in the
+  build environment. It mirrors `start.sh` line by line.
+* The Docker image was built and run with one line removed: the
+  `apt-get install gcc` step, because the build sandbox may not reach the
+  Debian package servers. With that variant: 345 tests pass inside the
+  container, 4 are skipped (the ones that need a C compiler); `ui` started
+  in 3 s, seeded the data volume with profiles and scenarios, saved a run to
+  the runs volume, and all three exports downloaded. On a normal home server
+  the gcc line works; without it only the software-in-the-loop option
+  (C compiler) would be missing.
+* Found that way: the "every parameter is used" test tried to compile the C
+  example and failed on a machine without a compiler (as on a plain Windows
+  PC). It now skips that one option there; a new test shows the C controller
+  reads no parameter of its own, so nothing is lost.
+* Aligning two logs in time (e.g. SD card + CAN) exists in code
+  (`clean.align_offset`, `RawLog.merged`) and is tested, but the UI imports
+  one log at a time.
+* Calibration runs its simulations one after another.
+* All data in the repository is synthetic. **Nothing has been validated
+  against the real vehicle**; every result stays labelled NOT VALIDATED
+  until a profile is calibrated on a real ride log.
+
+**What to measure first (decides wheel lift and rollover)**
+1. Weight on each of the three wheels, empty and with rider (three
+   bathroom scales) → mass and centre of gravity position.
+2. Height of the centre of gravity (tilt the vehicle or weigh it with the
+   rear raised).
+3. Track width and wheelbase.
+4. The current limits actually set in the BMS and both Fardriver
+   controllers (their sum must stay below the BMS limit).
+5. A coast-down from 40 km/h on a flat road (rolling resistance and drag).
+
+**Open questions for the builder**
+* Is the petrol throttle a cable (rider) or a servo (controller)?
+  (`engine.throttle_by_wire`)
+* Does the STM32G4 start and stop the engine automatically?
+* Does the Fardriver accept a torque command, or only a throttle voltage?

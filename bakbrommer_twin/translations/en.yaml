@@ -51,6 +51,7 @@ params:
   search: Search all parameters
   tab_edit: Edit
   tab_derived: Calculated values
+  tab_curves: Curves
   tab_compare: Compare profiles
   tab_history: History
   derived_intro: These values are calculated from the parameters and update when you change them.
@@ -206,11 +207,11 @@ result:
     Orange outline = slipping. Arrows = tyre force on the vehicle.
   follow: Camera follows the vehicle
   show_animation: Show the animation
-  export_intro: Download the signals as CSV, or a report to print or keep.
+  export_intro: >-
+    Download the signals as CSV, or a report to print or keep. A report is made
+    when you press its button; that takes a few seconds.
   export_csv: Download CSV
-  prepare_html: Prepare HTML report
   download_html: Download HTML report
-  prepare_pdf: Prepare PDF report
   download_pdf: Download PDF report
 results:
   title: Results and comparison
@@ -421,3 +422,25 @@ calibration:
   synthetic_note: This recording is a synthetic example. The values can be accepted to try the tool, but the profile will NOT be marked as validated.
   accept: "Accept these values into the working profile '{profile}'"
   accepted: Values accepted and marked 'calibrated'. Save the profile on the Parameters page to keep them.
+curves:
+  intro: These curves follow from the parameters of this profile and change when you edit them.
+  pick: Show
+  tyres: Tyre grip
+  motor: Electric motor map
+  engine: Petrol engine
+  battery: Battery
+  tyre_long: Lengthwise (drive / brake)
+  tyre_lat: Sideways (cornering)
+  slip_ratio: slip ratio [%]
+  slip_angle: slip angle [deg]
+  friction_used: force / wheel load
+  torque_limit: Torque limit
+  motor_title: "Efficiency battery to wheel, one motor, at {voltage:.0f} V and {current:.0f} A line limit"
+  engine_torque: Torque at full throttle
+  engine_power: Power at full throttle
+  fuel_map: Fuel use per kWh
+  engine_load: "load [%]"
+  battery_rest: At rest
+  battery_loaded: "At {current:.0f} A (BMS limit)"
+  battery_minimum: minimum voltage
+  state_of_charge: "state of charge [%]"

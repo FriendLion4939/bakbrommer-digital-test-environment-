@@ -116,6 +116,7 @@ knows nothing about scenarios, controllers or the UI.
 | `animation.py` | Top-down 2D animation with wheel loads, lift, slip and force arrows. |
 | `scenario_figures.py` | Route preview and drawing canvas of the scenario editor. |
 | `batch_figures.py` | Sweep line/heat map, histogram, optimiser history. |
+| `curve_figures.py` | Tyre, motor-map, engine/fuel-map and battery curves from the parameters. |
 | `tables.py` | Metric, safety-event and run-comparison tables. |
 | `export.py` | CSV, printable HTML report, PDF report. |
 

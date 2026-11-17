@@ -11,7 +11,12 @@ from bakbrommer_twin.params.derived import compute_derived
 from bakbrommer_twin.params.paramset import ParamSet
 from bakbrommer_twin.params.profile import Profile, ProfileStore, compare
 from bakbrommer_twin.params.types import ParamError, ParamValue
+from bakbrommer_twin.reports.curve_figures import CURVES
 from bakbrommer_twin.ui import param_form, state
+
+# curve key -> translation key of its title
+CURVE_TITLES = {"tyres": "curves.tyres", "motor": "curves.motor", "engine": "curves.engine",
+                "battery": "curves.battery"}
 
 
 def _show(value: ParamValue) -> str:
@@ -120,6 +125,17 @@ def _derived_tab(profile: Profile) -> None:
         )
 
 
+def _curves_tab(profile: Profile) -> None:
+    st.caption(t("curves.intro"))
+    chosen = st.pills(t("curves.pick"), list(CURVES), default=next(iter(CURVES)),
+                      format_func=lambda key: t(CURVE_TITLES[key]))
+    if chosen:
+        try:
+            st.plotly_chart(CURVES[chosen](profile.params), width="stretch")
+        except ValueError as exc:  # e.g. curve lists of different length
+            st.error(str(exc))
+
+
 def _compare_tab(store: ProfileStore, profile: Profile) -> None:
     keys = store.list_keys()
     current = f"{profile.key} {t('params.current_working')}"
@@ -155,14 +171,16 @@ def render() -> None:
     store = state.profile_store()
     profile = state.working_profile()
     _profile_bar(store, profile)
-    edit, derived, compare_tab, history = st.tabs([
-        t("params.tab_edit"), t("params.tab_derived"), t("params.tab_compare"),
-        t("params.tab_history"),
+    edit, derived, curves, compare_tab, history = st.tabs([
+        t("params.tab_edit"), t("params.tab_derived"), t("params.tab_curves"),
+        t("params.tab_compare"), t("params.tab_history"),
     ])
     with edit:
         _edit_tab(profile)
     with derived:
         _derived_tab(profile)
+    with curves:
+        _curves_tab(profile)
     with compare_tab:
         _compare_tab(store, profile)
     with history:

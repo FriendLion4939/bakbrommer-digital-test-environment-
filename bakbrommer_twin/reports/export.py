@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import html
 import io
+import re
+import unicodedata
 from collections.abc import Sequence
 
 import matplotlib
@@ -33,6 +35,18 @@ th{background:#f4f3ef} .warn{background:#fff4d6;border:1px solid #fab219;padding
 .meta{color:#52514e;font-size:13px}
 @media print{.plotly-graph-div{break-inside:avoid} h2{break-after:avoid}}
 """
+
+
+def file_stem(result: RunResult) -> str:
+    """Run name as a plain file name, e.g. ``City_stop-and-go_-_Default_bakbrommer``.
+
+    Only ASCII letters, digits, ``-``, ``_`` and ``.`` are kept, so every browser
+    and file system accepts it (an em dash becomes ``-``, accents are dropped).
+    """
+    text = result.meta.name.replace("—", "-").replace("–", "-")
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "_", text).strip("._-")
+    return stem or "run"
 
 
 def csv_text(result: RunResult) -> str:

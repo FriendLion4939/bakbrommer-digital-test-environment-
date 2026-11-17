@@ -1,0 +1,11 @@
+name: Hill descent 5 %
+description: Hold 30 km/h down a 5 % gradient. Shows brake use and energy recovered.
+category: longitudinal
+initial: {speed_kmh: 30}
+route:
+  - {type: straight, length_m: 30, speed_kmh: 30}
+  - {type: straight, length_m: 500, speed_kmh: 30, gradient_pct: -5}
+end: {time_limit_s: 90}
+metrics:
+  - {type: steady_speed}
+  - {type: top_speed}
